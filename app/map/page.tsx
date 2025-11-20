@@ -72,7 +72,7 @@ export default function MapPage() {
             </div>
           </div>
           <div className="text-right">
-            <p className="text-xs text-white/90">📊 시간대별 분위기</p>
+            <p className="text-xs text-white/90">시간대별 분위기</p>
             <p className="text-xs font-semibold text-white">장소 클릭 시 확인!</p>
           </div>
         </div>

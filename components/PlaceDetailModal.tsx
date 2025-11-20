@@ -39,7 +39,7 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[2000] p-3 animate-fadeIn">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-h-[85vh] overflow-hidden flex flex-col">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-[390px] max-h-[85vh] overflow-hidden flex flex-col">
         {/* 헤더 */}
         <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-pink-500 text-white p-4">
           <div className="flex justify-between items-start mb-3">

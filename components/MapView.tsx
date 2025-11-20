@@ -83,14 +83,20 @@ export default function MapView({ places }: MapViewProps) {
         places.forEach((place) => {
           const color = getSoundLevelColor(place.soundLevel);
 
+          // 이모지 선택
+          let emoji = '🤫';
+          if (place.soundLevel > 70) emoji = '🎉';
+          else if (place.soundLevel > 50) emoji = '☕';
+          else if (place.soundLevel > 30) emoji = '📚';
+
           // 커스텀 아이콘 HTML
           const customIcon = L.divIcon({
             className: 'custom-marker',
             html: `
               <div style="
-                width: 32px;
-                height: 32px;
-                background-color: ${color};
+                width: 40px;
+                height: 40px;
+                background: linear-gradient(135deg, ${color} 0%, ${color}dd 100%);
                 border: 3px solid white;
                 border-radius: 50%;
                 box-shadow: 0 2px 8px rgba(0,0,0,0.3);
@@ -98,14 +104,29 @@ export default function MapView({ places }: MapViewProps) {
                 align-items: center;
                 justify-content: center;
                 cursor: pointer;
+                position: relative;
               ">
-                <span style="color: white; font-weight: bold; font-size: 14px;">
-                  ${place.soundLevel}
+                <span style="font-size: 20px; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));">
+                  ${emoji}
                 </span>
+                <div style="
+                  position: absolute;
+                  bottom: -2px;
+                  right: -2px;
+                  background: white;
+                  border-radius: 10px;
+                  padding: 1px 4px;
+                  font-size: 9px;
+                  font-weight: bold;
+                  color: ${color};
+                  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+                ">
+                  ${place.soundLevel}
+                </div>
               </div>
             `,
-            iconSize: [32, 32],
-            iconAnchor: [16, 16],
+            iconSize: [40, 40],
+            iconAnchor: [20, 20],
           });
 
           const marker = L.marker([place.lat, place.lng], { icon: customIcon }).addTo(map);
