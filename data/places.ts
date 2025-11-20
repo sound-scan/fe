@@ -17,6 +17,171 @@ const generateTimeBasedLevels = (baseLevel: number, variation: number = 15): Tim
   });
 };
 
+// 런던 장소 데이터
+export const placesEN: Place[] = [
+  {
+    id: 1,
+    name: 'British Library',
+    lat: 51.5299,
+    lng: -0.1270,
+    soundLevel: 12,
+    timeBasedLevels: generateTimeBasedLevels(12, 7),
+    reviews: [
+      {
+        soundLevel: 10,
+        rating: 5,
+        comment: 'Perfect for focused study. Very quiet and peaceful.',
+      },
+      {
+        soundLevel: 14,
+        rating: 5,
+        comment: 'Excellent environment for research and concentration.',
+      },
+    ],
+  },
+  {
+    id: 2,
+    name: 'Starbucks Piccadilly Circus',
+    lat: 51.5101,
+    lng: -0.1340,
+    soundLevel: 78,
+    timeBasedLevels: generateTimeBasedLevels(78, 16),
+    reviews: [
+      {
+        soundLevel: 75,
+        rating: 4,
+        comment: 'Lively atmosphere! Great for meeting friends.',
+      },
+      {
+        soundLevel: 81,
+        rating: 4,
+        comment: 'Busy and energetic. Perfect for casual conversations.',
+      },
+    ],
+  },
+  {
+    id: 3,
+    name: 'London Library',
+    lat: 51.5074,
+    lng: -0.1359,
+    soundLevel: 15,
+    timeBasedLevels: generateTimeBasedLevels(15, 8),
+    reviews: [
+      {
+        soundLevel: 12,
+        rating: 5,
+        comment: 'Absolutely silent. Ideal for serious academic work.',
+      },
+      {
+        soundLevel: 18,
+        rating: 5,
+        comment: 'Premium quiet space for focused research.',
+      },
+    ],
+  },
+  {
+    id: 4,
+    name: 'Caffè Nero Covent Garden',
+    lat: 51.5118,
+    lng: -0.1220,
+    soundLevel: 62,
+    timeBasedLevels: generateTimeBasedLevels(62, 17),
+    reviews: [
+      {
+        soundLevel: 58,
+        rating: 4,
+        comment: 'Moderate noise. Good for light work and socializing.',
+      },
+      {
+        soundLevel: 66,
+        rating: 4,
+        comment: 'Busy but comfortable. Nice for meeting colleagues.',
+      },
+    ],
+  },
+  {
+    id: 5,
+    name: 'Costa Coffee Oxford Street',
+    lat: 51.5155,
+    lng: -0.1415,
+    soundLevel: 70,
+    timeBasedLevels: generateTimeBasedLevels(70, 18),
+    reviews: [
+      {
+        soundLevel: 67,
+        rating: 4,
+        comment: 'Lively shopping district vibe. Great for casual meetings.',
+      },
+      {
+        soundLevel: 73,
+        rating: 4,
+        comment: 'Energetic atmosphere, perfect for social gatherings.',
+      },
+    ],
+  },
+  {
+    id: 6,
+    name: 'Senate House Library',
+    lat: 51.5216,
+    lng: -0.1300,
+    soundLevel: 18,
+    timeBasedLevels: generateTimeBasedLevels(18, 9),
+    reviews: [
+      {
+        soundLevel: 16,
+        rating: 5,
+        comment: 'Very quiet reading rooms. Excellent for study.',
+      },
+      {
+        soundLevel: 20,
+        rating: 5,
+        comment: 'Perfect silent environment for deep work.',
+      },
+    ],
+  },
+  {
+    id: 7,
+    name: 'Pret A Manger Kings Cross',
+    lat: 51.5308,
+    lng: -0.1238,
+    soundLevel: 55,
+    timeBasedLevels: generateTimeBasedLevels(55, 15),
+    reviews: [
+      {
+        soundLevel: 52,
+        rating: 4,
+        comment: 'Reasonable noise level. Good for quick work sessions.',
+      },
+      {
+        soundLevel: 58,
+        rating: 4,
+        comment: 'Balanced atmosphere for both work and chat.',
+      },
+    ],
+  },
+  {
+    id: 8,
+    name: 'Wellcome Collection Library',
+    lat: 51.5259,
+    lng: -0.1337,
+    soundLevel: 20,
+    timeBasedLevels: generateTimeBasedLevels(20, 10),
+    reviews: [
+      {
+        soundLevel: 18,
+        rating: 5,
+        comment: 'Peaceful and inspiring space. Great for research.',
+      },
+      {
+        soundLevel: 22,
+        rating: 5,
+        comment: 'Quiet and comfortable reading environment.',
+      },
+    ],
+  },
+];
+
+// 서울 장소 데이터
 export const places: Place[] = [
   {
     id: 1,

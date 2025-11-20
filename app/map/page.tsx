@@ -29,7 +29,7 @@ function getCurrentTimeSlot() {
 }
 
 export default function MapPage() {
-  const { places } = useApp();
+  const { places, language } = useApp();
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const currentTime = getCurrentTimeSlot();
@@ -79,7 +79,7 @@ export default function MapPage() {
       </div>
 
       <div className="relative w-full h-[calc(100vh-198px)]">
-        <MapView places={filteredPlaces} />
+        <MapView places={filteredPlaces} language={language} />
         <MarkerLegend />
       </div>
     </div>

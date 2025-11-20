@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useApp } from '@/context/AppContext';
 
 interface FilterBarProps {
   onFilterChange: (filter: string) => void;
@@ -8,14 +9,20 @@ interface FilterBarProps {
 }
 
 export default function FilterBar({ onFilterChange, onSearchChange }: FilterBarProps) {
+  const { language } = useApp();
   const [activeFilter, setActiveFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filters = [
+  const filters = language === 'ko' ? [
     { id: 'all', label: '전체', icon: '📍' },
     { id: 'quiet', label: '조용함', icon: '🤫' },
     { id: 'moderate', label: '보통', icon: '☕' },
     { id: 'lively', label: '활기참', icon: '😆' },
+  ] : [
+    { id: 'all', label: 'All', icon: '📍' },
+    { id: 'quiet', label: 'Quiet', icon: '🤫' },
+    { id: 'moderate', label: 'Moderate', icon: '☕' },
+    { id: 'lively', label: 'Lively', icon: '😆' },
   ];
 
   const handleFilterClick = (filterId: string) => {
@@ -35,7 +42,7 @@ export default function FilterBar({ onFilterChange, onSearchChange }: FilterBarP
       <div className="relative">
         <input
           type="text"
-          placeholder="🔍 장소를 검색해보세요..."
+          placeholder={language === 'ko' ? '🔍 장소를 검색해보세요...' : '🔍 Search places...'}
           value={searchTerm}
           onChange={handleSearchChange}
           className="w-full px-4 py-2.5 pl-10 bg-white/90 backdrop-blur-sm border-2 border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-md hover:shadow-lg placeholder:text-gray-400 text-sm"

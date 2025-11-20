@@ -7,9 +7,10 @@ import PlaceDetailModal from './PlaceDetailModal';
 
 interface MapViewProps {
   places: Place[];
+  language: 'ko' | 'en';
 }
 
-export default function MapView({ places }: MapViewProps) {
+export default function MapView({ places, language }: MapViewProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
   const userMarkerRef = useRef<any>(null);
@@ -70,8 +71,9 @@ export default function MapView({ places }: MapViewProps) {
           mapInstanceRef.current.remove();
         }
 
-        // 새 맵 생성
-        const map = L.map(mapRef.current).setView([37.5172, 127.0473], 12);
+        // 새 맵 생성 - 언어에 따라 중심 좌표 설정
+        const center = language === 'ko' ? [37.5172, 127.0473] : [51.5074, -0.1278];
+        const map = L.map(mapRef.current).setView(center as [number, number], 12);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: '© OpenStreetMap contributors',
@@ -156,7 +158,7 @@ export default function MapView({ places }: MapViewProps) {
         mapInstanceRef.current = null;
       }
     };
-  }, [places]);
+  }, [places, language]);
 
   // 사용자 위치 마커 표시
   useEffect(() => {

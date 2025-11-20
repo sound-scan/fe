@@ -1,19 +1,26 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { useApp } from '@/context/AppContext';
 
 export default function MarkerLegend() {
+  const { language } = useApp();
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState({ x: 16, y: 16 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const legends = [
+  const legends = language === 'ko' ? [
     { color: '#6EE7B7', label: '정적에 가까운 조용함', emoji: '🔇' },
     { color: '#FACC15', label: '부드러운 백색소음', emoji: '🌿' },
     { color: '#FB923C', label: '편안한 대화가 가능한 공간', emoji: '☕' },
     { color: '#F43F5E', label: '활발한 소통에 최적', emoji: '😆' },
+  ] : [
+    { color: '#6EE7B7', label: 'Near-silent quietness', emoji: '🔇' },
+    { color: '#FACC15', label: 'Gentle ambient noise', emoji: '🌿' },
+    { color: '#FB923C', label: 'Comfortable conversation space', emoji: '☕' },
+    { color: '#F43F5E', label: 'Perfect for active communication', emoji: '😆' },
   ];
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -68,7 +75,7 @@ export default function MarkerLegend() {
           top: `${position.y}px`,
           cursor: isDragging ? 'grabbing' : 'grab',
         }}
-        title="공간 분위기 범례"
+        title={language === 'ko' ? '공간 분위기 범례' : 'Space Atmosphere Legend'}
       >
         <div className="relative bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-full p-3 shadow-xl hover:shadow-2xl transition-all hover:scale-110">
           <svg
@@ -84,9 +91,6 @@ export default function MarkerLegend() {
               d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          {!isOpen && (
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-ping" />
-          )}
         </div>
       </button>
 
@@ -99,31 +103,23 @@ export default function MarkerLegend() {
             top: `${position.y}px`,
           }}
         >
-          <div className="flex items-center justify-between mb-2 pb-2 border-b border-gray-200">
-            <div className="flex items-center gap-2">
-              <svg
-                className="w-4 h-4 text-blue-600"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <span className="text-xs font-bold text-gray-700">공간 분위기</span>
-            </div>
-            <button
-              onClick={() => setIsOpen(false)}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+          <div className="flex items-center gap-2 mb-2 pb-2 border-b border-gray-200">
+            <svg
+              className="w-4 h-4 text-blue-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
             >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span className="text-xs font-bold text-gray-700">
+              {language === 'ko' ? '공간 분위기' : 'Space Atmosphere'}
+            </span>
           </div>
           <div className="space-y-1.5">
             {legends.map((legend, index) => (
