@@ -12,8 +12,30 @@ interface MapViewProps {
 export default function MapView({ places }: MapViewProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
+  const userMarkerRef = useRef<any>(null);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+
+  const handleLocationClick = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setUserLocation({ lat: latitude, lng: longitude });
+          if (mapInstanceRef.current) {
+            mapInstanceRef.current.setView([latitude, longitude], 15);
+          }
+        },
+        (error) => {
+          console.error('Location error:', error);
+          alert('위치 정보를 가져올 수 없습니다. 위치 권한을 확인해주세요.');
+        }
+      );
+    } else {
+      alert('이 브라우저는 위치 서비스를 지원하지 않습니다.');
+    }
+  };
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -115,6 +137,48 @@ export default function MapView({ places }: MapViewProps) {
     };
   }, [places]);
 
+  // 사용자 위치 마커 표시
+  useEffect(() => {
+    if (!userLocation || !mapInstanceRef.current) return;
+
+    const loadLeaflet = async () => {
+      const L = (await import('leaflet')).default;
+
+      // 기존 사용자 마커 제거
+      if (userMarkerRef.current) {
+        userMarkerRef.current.remove();
+      }
+
+      // 사용자 위치 마커 추가
+      const userIcon = L.divIcon({
+        className: 'user-location-marker',
+        html: `
+          <div style="
+            width: 20px;
+            height: 20px;
+            background-color: #3b82f6;
+            border: 3px solid white;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+          "></div>
+        `,
+        iconSize: [20, 20],
+        iconAnchor: [10, 10],
+      });
+
+      userMarkerRef.current = L.marker([userLocation.lat, userLocation.lng], {
+        icon: userIcon,
+      }).addTo(mapInstanceRef.current);
+
+      userMarkerRef.current.bindTooltip('현재 위치', {
+        permanent: false,
+        direction: 'top',
+      });
+    };
+
+    loadLeaflet();
+  }, [userLocation]);
+
   return (
     <>
       <div className="relative w-full h-full">
@@ -127,6 +191,33 @@ export default function MapView({ places }: MapViewProps) {
           </div>
         )}
         <div ref={mapRef} className="w-full h-full" />
+
+        {/* 현재 위치 버튼 */}
+        <button
+          onClick={handleLocationClick}
+          className="absolute bottom-4 right-4 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-shadow z-[1000]"
+          title="내 위치로 이동"
+        >
+          <svg
+            className="w-6 h-6 text-blue-600"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+            />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+            />
+          </svg>
+        </button>
       </div>
       {selectedPlace && (
         <PlaceDetailModal place={selectedPlace} onClose={() => setSelectedPlace(null)} />
