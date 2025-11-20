@@ -82,3 +82,36 @@ body {
   transform: scale(1.15) !important;
   box-shadow: 0 4px 16px rgba(0,0,0,0.5) !important;
 }
+
+/* 플로팅 버튼 애니메이션 */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes floatRotate {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-8px) rotate(3deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-8px) rotate(-3deg);
+  }
+}
+
+.floating-button {
+  animation: floatRotate 3s ease-in-out infinite;
+}
+
+.floating-button:hover {
+  animation: none;
+}

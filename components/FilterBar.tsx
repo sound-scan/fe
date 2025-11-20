@@ -12,7 +12,7 @@ export default function FilterBar({ onFilterChange, onSearchChange }: FilterBarP
   const [searchTerm, setSearchTerm] = useState('');
 
   const filters = [
-    { id: 'all', label: '전체', icon: '🎯' },
+    { id: 'all', label: '전체', icon: '📍' },
     { id: 'quiet', label: '조용함', icon: '🤫' },
     { id: 'moderate', label: '보통', icon: '☕' },
     { id: 'lively', label: '활기참', icon: '😆' },
