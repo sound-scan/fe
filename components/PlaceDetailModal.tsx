@@ -38,50 +38,50 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[2000] p-4 animate-fadeIn">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[2000] p-3 animate-fadeIn">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-h-[85vh] overflow-hidden flex flex-col">
         {/* 헤더 */}
-        <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-pink-500 text-white p-6">
-          <div className="flex justify-between items-start mb-4">
+        <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-pink-500 text-white p-4">
+          <div className="flex justify-between items-start mb-3">
             <div className="flex-1">
-              <h2 className="text-2xl font-bold mb-3">{place.name}</h2>
-              <div className="flex items-center gap-3">
-                <div className="bg-white/20 backdrop-blur-md rounded-full px-4 py-2">
-                  <span className="text-sm font-medium">{level}</span>
+              <h2 className="text-xl font-bold mb-2">{place.name}</h2>
+              <div className="flex items-center gap-2">
+                <div className="bg-white/20 backdrop-blur-md rounded-full px-3 py-1">
+                  <span className="text-xs font-medium">{level}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <span className="text-4xl font-bold">{place.soundLevel}</span>
-                  <span className="text-sm opacity-80">/100</span>
+                  <span className="text-3xl font-bold">{place.soundLevel}</span>
+                  <span className="text-xs opacity-80">/100</span>
                 </div>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="text-white hover:bg-white/20 rounded-full p-2 transition-all"
+              className="text-white hover:bg-white/20 rounded-full p-1.5 transition-all"
             >
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
-          <p className="text-sm text-white/90">{activity}</p>
+          <p className="text-xs text-white/90">{activity}</p>
         </div>
 
         {/* 컨텐츠 */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-4">
           {/* 액션 버튼 */}
-          <div className="flex gap-3 mb-6">
+          <div className="flex gap-2 mb-4">
             <button
               onClick={handleMeasure}
-              className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-4 rounded-xl font-medium hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2.5 px-3 rounded-xl text-sm font-medium hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
-              🎤 소리 측정하기
+              🎤 소리 측정
             </button>
             <button
               onClick={() => setShowReviewForm(!showReviewForm)}
-              className="flex-1 bg-gradient-to-r from-purple-500 to-purple-600 text-white py-3 px-4 rounded-xl font-medium hover:from-purple-600 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              className="flex-1 bg-gradient-to-r from-purple-500 to-purple-600 text-white py-2.5 px-3 rounded-xl text-sm font-medium hover:from-purple-600 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
-              ✍️ 리뷰 남기기
+              ✍️ 리뷰 작성
             </button>
           </div>
 
@@ -175,29 +175,29 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
 
           {/* 탭 컨텐츠 */}
           {activeTab === 'chart' ? (
-            <div className="bg-gradient-to-br from-white to-blue-50 rounded-2xl p-5 border border-gray-200">
-              <h3 className="font-bold text-lg mb-2 text-gray-800">시간대별 소리 레벨</h3>
-              <p className="text-sm text-gray-600 mb-4">
+            <div className="bg-gradient-to-br from-white to-blue-50 rounded-xl p-3 border border-gray-200">
+              <h3 className="font-bold text-base mb-1 text-gray-800">시간대별 소리 레벨</h3>
+              <p className="text-xs text-gray-600 mb-3">
                 하루 동안의 평균 소리 레벨 변화를 확인하세요
               </p>
               <TimeBasedChart data={place.timeBasedLevels} />
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {place.reviews.map((review, index) => (
                 <div
                   key={index}
-                  className="bg-gradient-to-br from-white to-purple-50 rounded-2xl p-5 border border-gray-200 hover:shadow-md transition-shadow"
+                  className="bg-gradient-to-br from-white to-purple-50 rounded-xl p-3.5 border border-gray-200 hover:shadow-md transition-shadow"
                 >
-                  <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <span className="text-lg">{'⭐'.repeat(review.rating)}</span>
+                      <span className="text-base">{'⭐'.repeat(review.rating)}</span>
                     </div>
-                    <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                    <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs font-bold px-2.5 py-0.5 rounded-full">
                       소리 {review.soundLevel}
                     </div>
                   </div>
-                  <p className="text-gray-700 leading-relaxed">{review.comment}</p>
+                  <p className="text-sm text-gray-700 leading-relaxed">{review.comment}</p>
                 </div>
               ))}
             </div>
