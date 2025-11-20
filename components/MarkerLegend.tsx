@@ -22,10 +22,10 @@ export default function MarkerLegend() {
     { color: '#FB923C', label: '편안한 대화가 가능한 공간', emoji: '☕' },
     { color: '#F43F5E', label: '활발한 소통에 최적', emoji: '😆' },
   ] : [
-    { color: '#6EE7B7', label: 'Near-silent quietness', emoji: '🔇' },
-    { color: '#FACC15', label: 'Gentle ambient noise', emoji: '🌿' },
-    { color: '#FB923C', label: 'Comfortable conversation space', emoji: '☕' },
-    { color: '#F43F5E', label: 'Perfect for active communication', emoji: '😆' },
+    { color: '#6EE7B7', label: 'Whisper quiet', emoji: '🔇' },
+    { color: '#FACC15', label: 'Gentle ambience', emoji: '🌿' },
+    { color: '#FB923C', label: 'Cafe chatter', emoji: '☕' },
+    { color: '#F43F5E', label: 'Lively buzz', emoji: '😆' },
   ];
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -104,7 +104,7 @@ export default function MarkerLegend() {
         <div
           className="absolute z-[1000] bg-white/95 backdrop-blur-sm rounded-xl shadow-xl p-3 animate-fadeIn"
           style={{
-            right: `${390 - position.x + 60}px`,
+            right: `${338 - position.x + 60}px`,
             top: `${position.y}px`,
           }}
         >
