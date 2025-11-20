@@ -75,13 +75,13 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
               onClick={handleMeasure}
               className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2.5 px-3 rounded-xl text-sm font-medium hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
-              🎤 소리 측정
+              소리 측정
             </button>
             <button
               onClick={() => setShowReviewForm(!showReviewForm)}
               className="flex-1 bg-gradient-to-r from-purple-500 to-purple-600 text-white py-2.5 px-3 rounded-xl text-sm font-medium hover:from-purple-600 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
-              ✍️ 리뷰 작성
+              리뷰 작성
             </button>
           </div>
 
@@ -159,7 +159,7 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
                   : 'text-gray-600 hover:text-gray-800'
               }`}
             >
-              📊 시간대별 분위기
+              시간대별 분위기
             </button>
             <button
               onClick={() => setActiveTab('reviews')}
@@ -169,7 +169,7 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
                   : 'text-gray-600 hover:text-gray-800'
               }`}
             >
-              💬 리뷰 ({place.reviews.length})
+              리뷰 ({place.reviews.length})
             </button>
           </div>
 

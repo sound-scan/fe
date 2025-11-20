@@ -11,7 +11,6 @@ export default function Navigation() {
       <div className="container mx-auto px-4 py-3.5">
         <div className="flex items-center justify-between">
           <Link href="/map" className="flex items-center gap-2 text-xl font-bold tracking-tight hover:scale-105 transition-transform">
-            <span className="text-2xl">🎵</span>
             <span>Sound Scan</span>
           </Link>
           <div className="flex gap-2">
@@ -23,7 +22,6 @@ export default function Navigation() {
                   : 'bg-white/20 hover:bg-white/30 hover:scale-105'
               }`}
             >
-              <span>🗺️</span>
               <span>Map</span>
             </Link>
             <Link
@@ -34,7 +32,6 @@ export default function Navigation() {
                   : 'bg-white/20 hover:bg-white/30 hover:scale-105'
               }`}
             >
-              <span>🎤</span>
               <span>Measure</span>
             </Link>
           </div>

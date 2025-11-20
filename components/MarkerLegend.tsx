@@ -2,10 +2,10 @@
 
 export default function MarkerLegend() {
   const legends = [
-    { color: '#22c55e', label: '매우 조용', emoji: '🤫' },
-    { color: '#eab308', label: '적당히 조용', emoji: '📚' },
-    { color: '#f97316', label: '보통 분위기', emoji: '☕' },
-    { color: '#ef4444', label: '활기찬', emoji: '🎉' },
+    { color: '#6EE7B7', label: '정적에 가까운 조용함', emoji: '🔇' },
+    { color: '#FACC15', label: '부드러운 백색소음', emoji: '🌿' },
+    { color: '#FB923C', label: '편안한 대화가 가능한 공간', emoji: '☕' },
+    { color: '#F43F5E', label: '활발한 소통에 최적', emoji: '😆' },
   ];
 
   return (
@@ -24,7 +24,7 @@ export default function MarkerLegend() {
             d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
-        <span className="text-xs font-bold text-gray-700">소리 레벨</span>
+        <span className="text-xs font-bold text-gray-700">공간 분위기</span>
       </div>
       <div className="space-y-1.5">
         {legends.map((legend, index) => (
@@ -33,7 +33,9 @@ export default function MarkerLegend() {
               className="w-3 h-3 rounded-full flex-shrink-0 shadow-sm"
               style={{ backgroundColor: legend.color }}
             />
-            <span className="text-xs text-gray-700">{legend.emoji} {legend.label}</span>
+            <span className="text-xs text-gray-700">
+              {legend.emoji} {legend.label}
+            </span>
           </div>
         ))}
       </div>
