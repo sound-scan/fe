@@ -18,21 +18,31 @@ const MapView = dynamic(() => import('@/components/MapView'), {
   ),
 });
 
-function getCurrentTimeSlot() {
+function getCurrentTimeSlot(language: 'ko' | 'en') {
   const hour = new Date().getHours();
-  if (hour >= 6 && hour < 9) return { label: '오전 (6-9시)', emoji: '🌅', color: 'from-orange-400 to-yellow-400' };
-  if (hour >= 9 && hour < 12) return { label: '낮 (9-12시)', emoji: '☀️', color: 'from-yellow-400 to-amber-400' };
-  if (hour >= 12 && hour < 14) return { label: '점심 (12-14시)', emoji: '🍽️', color: 'from-amber-400 to-orange-500' };
-  if (hour >= 14 && hour < 18) return { label: '오후 (14-18시)', emoji: '🌤️', color: 'from-blue-400 to-cyan-400' };
-  if (hour >= 18 && hour < 21) return { label: '저녁 (18-21시)', emoji: '🌆', color: 'from-purple-400 to-pink-400' };
-  return { label: '밤 (21-24시)', emoji: '🌙', color: 'from-indigo-500 to-purple-600' };
+
+  if (language === 'ko') {
+    if (hour >= 6 && hour < 9) return { label: '오전 (6-9시)', emoji: '🌅', color: 'from-orange-400 to-yellow-400' };
+    if (hour >= 9 && hour < 12) return { label: '낮 (9-12시)', emoji: '☀️', color: 'from-yellow-400 to-amber-400' };
+    if (hour >= 12 && hour < 14) return { label: '점심 (12-14시)', emoji: '🍽️', color: 'from-amber-400 to-orange-500' };
+    if (hour >= 14 && hour < 18) return { label: '오후 (14-18시)', emoji: '🌤️', color: 'from-blue-400 to-cyan-400' };
+    if (hour >= 18 && hour < 21) return { label: '저녁 (18-21시)', emoji: '🌆', color: 'from-purple-400 to-pink-400' };
+    return { label: '밤 (21-24시)', emoji: '🌙', color: 'from-indigo-500 to-purple-600' };
+  } else {
+    if (hour >= 6 && hour < 9) return { label: 'Morning (6-9)', emoji: '🌅', color: 'from-orange-400 to-yellow-400' };
+    if (hour >= 9 && hour < 12) return { label: 'Late Morning (9-12)', emoji: '☀️', color: 'from-yellow-400 to-amber-400' };
+    if (hour >= 12 && hour < 14) return { label: 'Lunch (12-14)', emoji: '🍽️', color: 'from-amber-400 to-orange-500' };
+    if (hour >= 14 && hour < 18) return { label: 'Afternoon (14-18)', emoji: '🌤️', color: 'from-blue-400 to-cyan-400' };
+    if (hour >= 18 && hour < 21) return { label: 'Evening (18-21)', emoji: '🌆', color: 'from-purple-400 to-pink-400' };
+    return { label: 'Night (21-24)', emoji: '🌙', color: 'from-indigo-500 to-purple-600' };
+  }
 }
 
 export default function MapPage() {
   const { places, language } = useApp();
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const currentTime = getCurrentTimeSlot();
+  const currentTime = getCurrentTimeSlot(language);
 
   const filteredPlaces = useMemo(() => {
     let filtered = places;
@@ -67,13 +77,19 @@ export default function MapPage() {
           <div className="flex items-center gap-2">
             <span className="text-2xl">{currentTime.emoji}</span>
             <div>
-              <p className="text-xs font-medium text-white/90">현재 시간대</p>
+              <p className="text-xs font-medium text-white/90">
+                {language === 'ko' ? '현재 시간대' : 'Current Time'}
+              </p>
               <p className="text-sm font-bold text-white">{currentTime.label}</p>
             </div>
           </div>
           <div className="text-right">
-            <p className="text-xs text-white/90">시간대별 분위기</p>
-            <p className="text-xs font-semibold text-white">장소 클릭 시 확인!</p>
+            <p className="text-xs text-white/90">
+              {language === 'ko' ? '시간대별 분위기' : 'Time-based Atmosphere'}
+            </p>
+            <p className="text-xs font-semibold text-white">
+              {language === 'ko' ? '장소 클릭 시 확인!' : 'Click to see details!'}
+            </p>
           </div>
         </div>
       </div>

@@ -44,7 +44,7 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
               <div className="flex items-center justify-between mb-4">
                 <span className="text-sm text-gray-600">현재 언어:</span>
                 <span className="text-sm font-bold text-gray-800">
-                  {language === 'ko' ? '한국어 🇰🇷' : 'English 🇬🇧'}
+                  {language === 'ko' ? '한국어 🇰🇷' : 'UK (English) 🇬🇧'}
                 </span>
               </div>
 

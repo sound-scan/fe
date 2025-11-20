@@ -11,6 +11,11 @@ export default function MarkerLegend() {
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const buttonRef = useRef<HTMLButtonElement>(null);
 
+  // 언어가 변경되면 범례 닫기
+  useEffect(() => {
+    setIsOpen(false);
+  }, [language]);
+
   const legends = language === 'ko' ? [
     { color: '#6EE7B7', label: '정적에 가까운 조용함', emoji: '🔇' },
     { color: '#FACC15', label: '부드러운 백색소음', emoji: '🌿' },
@@ -99,7 +104,7 @@ export default function MarkerLegend() {
         <div
           className="absolute z-[1000] bg-white/95 backdrop-blur-sm rounded-xl shadow-xl p-3 animate-fadeIn"
           style={{
-            left: `${position.x - 200}px`,
+            right: `${390 - position.x + 60}px`,
             top: `${position.y}px`,
           }}
         >
