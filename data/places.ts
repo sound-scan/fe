@@ -1,4 +1,21 @@
-import { Place } from '@/types';
+import { Place, TimeSlot } from '@/types';
+
+// 시간대별 소리 레벨 생성 헬퍼 함수
+const generateTimeBasedLevels = (baseLevel: number, variation: number = 15): TimeSlot[] => {
+  const times = ['오전\n6-9시', '낮\n9-12시', '점심\n12-14시', '오후\n14-18시', '저녁\n18-21시', '밤\n21-24시'];
+  return times.map((time, index) => {
+    // 점심시간과 저녁시간에 더 시끄럽게
+    let levelModifier = 0;
+    if (index === 2) levelModifier = variation; // 점심
+    else if (index === 4) levelModifier = variation * 0.7; // 저녁
+    else if (index === 0 || index === 5) levelModifier = -variation * 0.5; // 오전, 밤
+
+    return {
+      time,
+      level: Math.min(100, Math.max(0, Math.round(baseLevel + levelModifier)))
+    };
+  });
+};
 
 export const places: Place[] = [
   {
@@ -7,6 +24,7 @@ export const places: Place[] = [
     lat: 37.4979,
     lng: 127.0276,
     soundLevel: 75,
+    timeBasedLevels: generateTimeBasedLevels(75, 15),
     reviews: [
       {
         soundLevel: 70,
@@ -26,6 +44,7 @@ export const places: Place[] = [
     lat: 37.5168,
     lng: 127.0398,
     soundLevel: 15,
+    timeBasedLevels: generateTimeBasedLevels(15, 8),
     reviews: [
       {
         soundLevel: 10,
@@ -45,6 +64,7 @@ export const places: Place[] = [
     lat: 37.5563,
     lng: 126.9235,
     soundLevel: 65,
+    timeBasedLevels: generateTimeBasedLevels(65, 18),
     reviews: [
       {
         soundLevel: 60,
@@ -64,6 +84,7 @@ export const places: Place[] = [
     lat: 37.4601,
     lng: 126.9520,
     soundLevel: 20,
+    timeBasedLevels: generateTimeBasedLevels(20, 10),
     reviews: [
       {
         soundLevel: 15,
@@ -83,6 +104,7 @@ export const places: Place[] = [
     lat: 37.5172,
     lng: 127.0473,
     soundLevel: 40,
+    timeBasedLevels: generateTimeBasedLevels(40, 15),
     reviews: [
       {
         soundLevel: 35,
@@ -102,6 +124,7 @@ export const places: Place[] = [
     lat: 37.5584,
     lng: 126.9377,
     soundLevel: 55,
+    timeBasedLevels: generateTimeBasedLevels(55, 16),
     reviews: [
       {
         soundLevel: 50,
@@ -121,6 +144,7 @@ export const places: Place[] = [
     lat: 37.5119,
     lng: 127.0602,
     soundLevel: 25,
+    timeBasedLevels: generateTimeBasedLevels(25, 12),
     reviews: [
       {
         soundLevel: 20,
@@ -140,6 +164,7 @@ export const places: Place[] = [
     lat: 37.5346,
     lng: 126.9946,
     soundLevel: 42,
+    timeBasedLevels: generateTimeBasedLevels(42, 14),
     reviews: [
       {
         soundLevel: 38,
@@ -159,6 +184,7 @@ export const places: Place[] = [
     lat: 37.5557,
     lng: 126.9024,
     soundLevel: 28,
+    timeBasedLevels: generateTimeBasedLevels(28, 10),
     reviews: [
       {
         soundLevel: 25,
@@ -178,6 +204,7 @@ export const places: Place[] = [
     lat: 37.5658,
     lng: 126.9252,
     soundLevel: 52,
+    timeBasedLevels: generateTimeBasedLevels(52, 15),
     reviews: [
       {
         soundLevel: 48,
@@ -197,6 +224,7 @@ export const places: Place[] = [
     lat: 37.5445,
     lng: 127.0558,
     soundLevel: 68,
+    timeBasedLevels: generateTimeBasedLevels(68, 17),
     reviews: [
       {
         soundLevel: 65,
@@ -216,6 +244,7 @@ export const places: Place[] = [
     lat: 37.5566,
     lng: 127.0446,
     soundLevel: 18,
+    timeBasedLevels: generateTimeBasedLevels(18, 9),
     reviews: [
       {
         soundLevel: 15,
@@ -235,6 +264,7 @@ export const places: Place[] = [
     lat: 37.5447,
     lng: 127.0547,
     soundLevel: 72,
+    timeBasedLevels: generateTimeBasedLevels(72, 16),
     reviews: [
       {
         soundLevel: 68,
@@ -254,6 +284,7 @@ export const places: Place[] = [
     lat: 37.5835,
     lng: 126.9825,
     soundLevel: 35,
+    timeBasedLevels: generateTimeBasedLevels(35, 12),
     reviews: [
       {
         soundLevel: 32,
@@ -273,6 +304,7 @@ export const places: Place[] = [
     lat: 37.5668,
     lng: 126.9784,
     soundLevel: 12,
+    timeBasedLevels: generateTimeBasedLevels(12, 7),
     reviews: [
       {
         soundLevel: 10,
@@ -292,6 +324,7 @@ export const places: Place[] = [
     lat: 37.5704,
     lng: 126.9772,
     soundLevel: 58,
+    timeBasedLevels: generateTimeBasedLevels(58, 16),
     reviews: [
       {
         soundLevel: 55,
@@ -311,6 +344,7 @@ export const places: Place[] = [
     lat: 37.5663,
     lng: 126.9387,
     soundLevel: 17,
+    timeBasedLevels: generateTimeBasedLevels(17, 9),
     reviews: [
       {
         soundLevel: 15,
@@ -330,6 +364,7 @@ export const places: Place[] = [
     lat: 37.5818,
     lng: 126.9836,
     soundLevel: 44,
+    timeBasedLevels: generateTimeBasedLevels(44, 14),
     reviews: [
       {
         soundLevel: 41,
@@ -349,6 +384,7 @@ export const places: Place[] = [
     lat: 37.5403,
     lng: 127.0697,
     soundLevel: 70,
+    timeBasedLevels: generateTimeBasedLevels(70, 18),
     reviews: [
       {
         soundLevel: 67,
@@ -368,6 +404,7 @@ export const places: Place[] = [
     lat: 37.5311,
     lng: 126.9145,
     soundLevel: 10,
+    timeBasedLevels: generateTimeBasedLevels(10, 6),
     reviews: [
       {
         soundLevel: 8,

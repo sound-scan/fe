@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Place } from '@/types';
 import { useApp } from '@/context/AppContext';
 import { getSoundLevelDescription } from '@/utils/soundLevel';
+import TimeBasedChart from './TimeBasedChart';
 
 interface PlaceDetailModalProps {
   place: Place;
@@ -15,6 +16,7 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
   const router = useRouter();
   const { addReview } = useApp();
   const [showReviewForm, setShowReviewForm] = useState(false);
+  const [activeTab, setActiveTab] = useState<'chart' | 'reviews'>('chart');
   const [reviewForm, setReviewForm] = useState({
     soundLevel: 50,
     rating: 5,
@@ -36,64 +38,61 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[2000] p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-t-2xl">
-          <div className="flex justify-between items-start">
-            <div>
-              <h2 className="text-2xl font-bold mb-2">{place.name}</h2>
-              <div className="space-y-1">
-                <p className="text-lg font-semibold">{level}</p>
-                <p className="text-sm text-blue-100">{activity}</p>
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[2000] p-4 animate-fadeIn">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+        {/* 헤더 */}
+        <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-pink-500 text-white p-6">
+          <div className="flex justify-between items-start mb-4">
+            <div className="flex-1">
+              <h2 className="text-2xl font-bold mb-3">{place.name}</h2>
+              <div className="flex items-center gap-3">
+                <div className="bg-white/20 backdrop-blur-md rounded-full px-4 py-2">
+                  <span className="text-sm font-medium">{level}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="text-4xl font-bold">{place.soundLevel}</span>
+                  <span className="text-sm opacity-80">/100</span>
+                </div>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="text-white hover:bg-white/20 rounded-full p-2 transition-colors"
+              className="text-white hover:bg-white/20 rounded-full p-2 transition-all"
             >
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
+          <p className="text-sm text-white/90">{activity}</p>
         </div>
 
-        <div className="p-6">
-          <div className="mb-6">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-gray-600 font-medium">평균 소리 레벨</span>
-              <span className="text-2xl font-bold text-blue-600">{place.soundLevel}</span>
-            </div>
-            <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-green-500 via-yellow-500 via-orange-500 to-red-500"
-                style={{ width: `${place.soundLevel}%` }}
-              />
-            </div>
-          </div>
-
+        {/* 컨텐츠 */}
+        <div className="flex-1 overflow-y-auto p-6">
+          {/* 액션 버튼 */}
           <div className="flex gap-3 mb-6">
             <button
               onClick={handleMeasure}
-              className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:from-blue-600 hover:to-blue-700 transition-all shadow-md"
+              className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-4 rounded-xl font-medium hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
-              소리 측정하기
+              🎤 소리 측정하기
             </button>
             <button
               onClick={() => setShowReviewForm(!showReviewForm)}
-              className="flex-1 bg-gradient-to-r from-purple-500 to-purple-600 text-white py-3 px-4 rounded-lg font-medium hover:from-purple-600 hover:to-purple-700 transition-all shadow-md"
+              className="flex-1 bg-gradient-to-r from-purple-500 to-purple-600 text-white py-3 px-4 rounded-xl font-medium hover:from-purple-600 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
-              리뷰 남기기
+              ✍️ 리뷰 남기기
             </button>
           </div>
 
+          {/* 리뷰 폼 */}
           {showReviewForm && (
-            <form onSubmit={handleSubmitReview} className="mb-6 p-4 bg-gray-50 rounded-lg">
-              <h3 className="font-bold text-lg mb-4">새 리뷰 작성</h3>
+            <form onSubmit={handleSubmitReview} className="mb-6 p-5 bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl border border-gray-200 animate-fadeIn">
+              <h3 className="font-bold text-lg mb-4 text-gray-800">✨ 새 리뷰 작성</h3>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    소리 레벨 (0-100)
+                    소리 레벨 ({reviewForm.soundLevel})
                   </label>
                   <input
                     type="range"
@@ -103,29 +102,29 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
                     onChange={(e) =>
                       setReviewForm({ ...reviewForm, soundLevel: parseInt(e.target.value) })
                     }
-                    className="w-full"
+                    className="w-full h-2 bg-gradient-to-r from-green-400 via-yellow-400 via-orange-400 to-red-400 rounded-lg appearance-none cursor-pointer"
                   />
-                  <div className="text-center text-2xl font-bold text-blue-600 mt-2">
-                    {reviewForm.soundLevel}
-                  </div>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     별점
                   </label>
-                  <select
-                    value={reviewForm.rating}
-                    onChange={(e) =>
-                      setReviewForm({ ...reviewForm, rating: parseInt(e.target.value) })
-                    }
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
-                  >
+                  <div className="flex gap-2">
                     {[5, 4, 3, 2, 1].map((rating) => (
-                      <option key={rating} value={rating}>
+                      <button
+                        key={rating}
+                        type="button"
+                        onClick={() => setReviewForm({ ...reviewForm, rating })}
+                        className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                          reviewForm.rating === rating
+                            ? 'bg-yellow-400 text-white shadow-md scale-110'
+                            : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                        }`}
+                      >
                         {'⭐'.repeat(rating)}
-                      </option>
+                      </button>
                     ))}
-                  </select>
+                  </div>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -134,7 +133,7 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
                   <textarea
                     value={reviewForm.comment}
                     onChange={(e) => setReviewForm({ ...reviewForm, comment: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                    className="w-full border-2 border-gray-300 focus:border-blue-500 rounded-xl px-4 py-3 transition-colors outline-none"
                     rows={3}
                     placeholder="이 장소는 어떤 활동에 좋았나요?"
                     required
@@ -142,7 +141,7 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
                 </div>
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-2 rounded-lg font-medium hover:from-green-600 hover:to-green-700 transition-all"
+                  className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-xl font-medium hover:from-green-600 hover:to-emerald-700 transition-all shadow-lg"
                 >
                   리뷰 등록
                 </button>
@@ -150,24 +149,59 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
             </form>
           )}
 
-          <div>
-            <h3 className="font-bold text-lg mb-4">리뷰 ({place.reviews.length})</h3>
-            <div className="space-y-4">
+          {/* 탭 */}
+          <div className="flex gap-2 mb-4 bg-gray-100 p-1 rounded-xl">
+            <button
+              onClick={() => setActiveTab('chart')}
+              className={`flex-1 py-2.5 px-4 rounded-lg font-medium transition-all ${
+                activeTab === 'chart'
+                  ? 'bg-white text-blue-600 shadow-md'
+                  : 'text-gray-600 hover:text-gray-800'
+              }`}
+            >
+              📊 시간대별 분위기
+            </button>
+            <button
+              onClick={() => setActiveTab('reviews')}
+              className={`flex-1 py-2.5 px-4 rounded-lg font-medium transition-all ${
+                activeTab === 'reviews'
+                  ? 'bg-white text-purple-600 shadow-md'
+                  : 'text-gray-600 hover:text-gray-800'
+              }`}
+            >
+              💬 리뷰 ({place.reviews.length})
+            </button>
+          </div>
+
+          {/* 탭 컨텐츠 */}
+          {activeTab === 'chart' ? (
+            <div className="bg-gradient-to-br from-white to-blue-50 rounded-2xl p-5 border border-gray-200">
+              <h3 className="font-bold text-lg mb-2 text-gray-800">시간대별 소리 레벨</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                하루 동안의 평균 소리 레벨 변화를 확인하세요
+              </p>
+              <TimeBasedChart data={place.timeBasedLevels} />
+            </div>
+          ) : (
+            <div className="space-y-3">
               {place.reviews.map((review, index) => (
-                <div key={index} className="border border-gray-200 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-2">
+                <div
+                  key={index}
+                  className="bg-gradient-to-br from-white to-purple-50 rounded-2xl p-5 border border-gray-200 hover:shadow-md transition-shadow"
+                >
+                  <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <span className="text-yellow-500">{'⭐'.repeat(review.rating)}</span>
-                      <span className="text-sm text-gray-500">
-                        소리 레벨: {review.soundLevel}
-                      </span>
+                      <span className="text-lg">{'⭐'.repeat(review.rating)}</span>
+                    </div>
+                    <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                      소리 {review.soundLevel}
                     </div>
                   </div>
-                  <p className="text-gray-700">{review.comment}</p>
+                  <p className="text-gray-700 leading-relaxed">{review.comment}</p>
                 </div>
               ))}
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
