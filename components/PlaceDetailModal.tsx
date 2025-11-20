@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { Place } from '@/types';
 import { useApp } from '@/context/AppContext';
 import { getSoundLevelDescription } from '@/utils/soundLevel';
@@ -13,7 +12,6 @@ interface PlaceDetailModalProps {
 }
 
 export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalProps) {
-  const router = useRouter();
   const { addReview } = useApp();
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [activeTab, setActiveTab] = useState<'chart' | 'reviews'>('chart');
@@ -110,10 +108,6 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
     alert('리뷰가 등록되었습니다!');
   };
 
-  const handleMeasure = () => {
-    router.push('/measure');
-  };
-
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[2000] p-3 animate-fadeIn">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-[390px] max-h-[85vh] overflow-hidden flex flex-col">
@@ -146,69 +140,64 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
 
         {/* 컨텐츠 */}
         <div className="flex-1 overflow-y-auto p-4">
-          {/* 액션 버튼 */}
-          <div className="flex gap-2 mb-4">
+          {/* 소리 측정 버튼 */}
+          {!isMeasuring && !showReviewForm && (
             <button
-              onClick={handleMeasure}
-              className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2.5 px-3 rounded-xl text-sm font-medium hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              onClick={startMeasuring}
+              className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-4 rounded-xl font-medium hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl mb-4"
             >
-              소리 측정
+              🎤 소리 측정하고 리뷰 작성하기
             </button>
-            <button
-              onClick={() => setShowReviewForm(!showReviewForm)}
-              className="flex-1 bg-gradient-to-r from-purple-500 to-purple-600 text-white py-2.5 px-3 rounded-xl text-sm font-medium hover:from-purple-600 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-            >
-              리뷰 작성
-            </button>
-          </div>
+          )}
+
+          {/* 측정 중 상태 */}
+          {isMeasuring && (
+            <div className="mb-4 p-5 bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl border-2 border-blue-200 animate-fadeIn">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-bold text-lg text-gray-800">🎤 소리 측정 중</h3>
+                <button
+                  onClick={stopMeasuring}
+                  className="bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-red-600 hover:to-red-700 transition-all shadow-md"
+                >
+                  ⏹ 측정 중지
+                </button>
+              </div>
+              <div className="mb-3 flex items-center gap-2 bg-blue-100 px-4 py-3 rounded-lg">
+                <div className="w-3 h-3 bg-blue-600 rounded-full animate-pulse"></div>
+                <span className="text-sm font-medium text-blue-700">실시간으로 소리를 측정하고 있습니다...</span>
+              </div>
+              <div className="bg-white rounded-xl p-4 text-center">
+                <div className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+                  {reviewForm.soundLevel}
+                </div>
+                <p className="text-sm text-gray-600">현재 소리 레벨</p>
+              </div>
+            </div>
+          )}
+
+          {measureError && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-600 text-sm">{measureError}</p>
+            </div>
+          )}
 
           {/* 리뷰 폼 */}
-          {showReviewForm && (
+          {(isMeasuring || showReviewForm) && (
             <form onSubmit={handleSubmitReview} className="mb-6 p-5 bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl border border-gray-200 animate-fadeIn">
-              <h3 className="font-bold text-lg mb-4 text-gray-800">✨ 새 리뷰 작성</h3>
+              <h3 className="font-bold text-lg mb-4 text-gray-800">✨ 리뷰 작성</h3>
               <div className="space-y-4">
                 <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="text-sm font-medium text-gray-700">
-                      소리 레벨 ({reviewForm.soundLevel})
-                    </label>
-                    <button
-                      type="button"
-                      onClick={isMeasuring ? stopMeasuring : startMeasuring}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all shadow-sm ${
-                        isMeasuring
-                          ? 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700'
-                          : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700'
-                      }`}
-                    >
-                      {isMeasuring ? '⏹ 측정 중지' : '🎤 실시간 측정'}
-                    </button>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    측정된 소리 레벨
+                  </label>
+                  <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 text-center border-2 border-gray-200">
+                    <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                      {reviewForm.soundLevel}
+                    </div>
+                    <p className="text-xs text-gray-600 mt-1">
+                      {getSoundLevelDescription(reviewForm.soundLevel).level}
+                    </p>
                   </div>
-                  {measureError && (
-                    <div className="mb-2 p-2 bg-red-50 border border-red-200 rounded-lg">
-                      <p className="text-red-600 text-xs">{measureError}</p>
-                    </div>
-                  )}
-                  {isMeasuring && (
-                    <div className="mb-2 flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-lg">
-                      <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></div>
-                      <span className="text-xs font-medium text-blue-600">실시간으로 소리를 측정하고 있습니다...</span>
-                    </div>
-                  )}
-                  <input
-                    type="range"
-                    min="0"
-                    max="100"
-                    value={reviewForm.soundLevel}
-                    onChange={(e) =>
-                      setReviewForm({ ...reviewForm, soundLevel: parseInt(e.target.value) })
-                    }
-                    disabled={isMeasuring}
-                    className="w-full h-2 bg-gradient-to-r from-green-400 via-yellow-400 via-orange-400 to-red-400 rounded-lg appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    {isMeasuring ? '측정 중에는 슬라이더를 조작할 수 없습니다' : '슬라이더를 움직이거나 실시간 측정을 사용하세요'}
-                  </p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
