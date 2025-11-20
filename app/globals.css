@@ -18,12 +18,18 @@ body {
   }
 }
 
-/* 모바일 앱 컨테이너 */
+/* 모바일 앱 컨테이너 - 아이폰 14 사이즈 */
 .mobile-app-container {
-  max-width: 480px;
+  max-width: 390px;
   margin: 0 auto;
   background: white;
   min-height: 100vh;
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
   position: relative;
+}
+
+@media (max-width: 390px) {
+  .mobile-app-container {
+    max-width: 100%;
+  }
 }
