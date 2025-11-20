@@ -6,7 +6,7 @@ import { useApp } from '@/context/AppContext';
 export default function MarkerLegend() {
   const { language } = useApp();
   const [isOpen, setIsOpen] = useState(false);
-  const [position, setPosition] = useState({ x: 16, y: 16 });
+  const [position, setPosition] = useState({ x: 322, y: 16 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -99,7 +99,7 @@ export default function MarkerLegend() {
         <div
           className="absolute z-[1000] bg-white/95 backdrop-blur-sm rounded-xl shadow-xl p-3 animate-fadeIn"
           style={{
-            left: `${position.x + 60}px`,
+            left: `${position.x - 200}px`,
             top: `${position.y}px`,
           }}
         >
