@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Place } from '@/types';
 import { useApp } from '@/context/AppContext';
@@ -22,11 +22,88 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
     rating: 5,
     comment: '',
   });
+  const [isMeasuring, setIsMeasuring] = useState(false);
+  const [measureError, setMeasureError] = useState<string | null>(null);
+
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const microphoneRef = useRef<MediaStreamAudioSourceNode | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   const { level, activity } = getSoundLevelDescription(place.soundLevel);
 
+  // 컴포넌트 언마운트 시 측정 중지
+  useEffect(() => {
+    return () => {
+      stopMeasuring();
+    };
+  }, []);
+
+  const startMeasuring = async () => {
+    try {
+      setMeasureError(null);
+
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+
+      const audioContext = new AudioContext();
+      const analyser = audioContext.createAnalyser();
+      const microphone = audioContext.createMediaStreamSource(stream);
+
+      analyser.fftSize = 256;
+      microphone.connect(analyser);
+
+      audioContextRef.current = audioContext;
+      analyserRef.current = analyser;
+      microphoneRef.current = microphone;
+
+      setIsMeasuring(true);
+      updateSoundLevel();
+    } catch (err) {
+      console.error('Error accessing microphone:', err);
+      setMeasureError('마이크 접근 권한이 필요합니다.');
+    }
+  };
+
+  const stopMeasuring = () => {
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
+
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    }
+
+    if (audioContextRef.current) {
+      audioContextRef.current.close();
+      audioContextRef.current = null;
+    }
+
+    microphoneRef.current = null;
+    analyserRef.current = null;
+    setIsMeasuring(false);
+  };
+
+  const updateSoundLevel = () => {
+    if (!analyserRef.current) return;
+
+    const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
+    analyserRef.current.getByteFrequencyData(dataArray);
+
+    const average = dataArray.reduce((sum, value) => sum + value, 0) / dataArray.length;
+    const normalizedLevel = Math.min(100, Math.round((average / 128) * 100));
+
+    setReviewForm((prev) => ({ ...prev, soundLevel: normalizedLevel }));
+
+    animationFrameRef.current = requestAnimationFrame(updateSoundLevel);
+  };
+
   const handleSubmitReview = (e: React.FormEvent) => {
     e.preventDefault();
+    stopMeasuring();
     addReview(place.id, reviewForm);
     setShowReviewForm(false);
     setReviewForm({ soundLevel: 50, rating: 5, comment: '' });
@@ -91,9 +168,33 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
               <h3 className="font-bold text-lg mb-4 text-gray-800">✨ 새 리뷰 작성</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    소리 레벨 ({reviewForm.soundLevel})
-                  </label>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-sm font-medium text-gray-700">
+                      소리 레벨 ({reviewForm.soundLevel})
+                    </label>
+                    <button
+                      type="button"
+                      onClick={isMeasuring ? stopMeasuring : startMeasuring}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all shadow-sm ${
+                        isMeasuring
+                          ? 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700'
+                          : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700'
+                      }`}
+                    >
+                      {isMeasuring ? '⏹ 측정 중지' : '🎤 실시간 측정'}
+                    </button>
+                  </div>
+                  {measureError && (
+                    <div className="mb-2 p-2 bg-red-50 border border-red-200 rounded-lg">
+                      <p className="text-red-600 text-xs">{measureError}</p>
+                    </div>
+                  )}
+                  {isMeasuring && (
+                    <div className="mb-2 flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-lg">
+                      <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></div>
+                      <span className="text-xs font-medium text-blue-600">실시간으로 소리를 측정하고 있습니다...</span>
+                    </div>
+                  )}
                   <input
                     type="range"
                     min="0"
@@ -102,8 +203,12 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
                     onChange={(e) =>
                       setReviewForm({ ...reviewForm, soundLevel: parseInt(e.target.value) })
                     }
-                    className="w-full h-2 bg-gradient-to-r from-green-400 via-yellow-400 via-orange-400 to-red-400 rounded-lg appearance-none cursor-pointer"
+                    disabled={isMeasuring}
+                    className="w-full h-2 bg-gradient-to-r from-green-400 via-yellow-400 via-orange-400 to-red-400 rounded-lg appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   />
+                  <p className="text-xs text-gray-500 mt-1">
+                    {isMeasuring ? '측정 중에는 슬라이더를 조작할 수 없습니다' : '슬라이더를 움직이거나 실시간 측정을 사용하세요'}
+                  </p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
