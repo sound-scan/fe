@@ -15,7 +15,7 @@ export default function FilterBar({ onFilterChange, onSearchChange }: FilterBarP
     { id: 'all', label: '전체', icon: '🎯' },
     { id: 'quiet', label: '조용함', icon: '🤫' },
     { id: 'moderate', label: '보통', icon: '☕' },
-    { id: 'lively', label: '활기참', icon: '🎉' },
+    { id: 'lively', label: '활기참', icon: '😆' },
   ];
 
   const handleFilterClick = (filterId: string) => {

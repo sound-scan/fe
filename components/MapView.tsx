@@ -85,7 +85,7 @@ export default function MapView({ places }: MapViewProps) {
 
           // 이모지 선택
           let emoji = '🤫';
-          if (place.soundLevel > 70) emoji = '🎉';
+          if (place.soundLevel > 70) emoji = '😆';
           else if (place.soundLevel > 50) emoji = '☕';
           else if (place.soundLevel > 30) emoji = '📚';
 
