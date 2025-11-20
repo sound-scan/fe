@@ -1,27 +1,141 @@
 'use client';
 
+import { useState, useRef, useEffect } from 'react';
+import { useApp } from '@/context/AppContext';
+
 export default function MarkerLegend() {
-  const legends = [
-    { color: '#22c55e', label: '매우 조용 — 공부/작업에 최고' },
-    { color: '#eab308', label: '적당히 조용 — 공부 + 대화 모두 가능' },
-    { color: '#f97316', label: '보통 분위기 — 밝고 편안한 공간' },
-    { color: '#ef4444', label: '활기찬 공간 — 친구와 대화/모임 최적' },
+  const { language } = useApp();
+  const [isOpen, setIsOpen] = useState(false);
+  const [position, setPosition] = useState({ x: 16, y: 16 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const legends = language === 'ko' ? [
+    { color: '#6EE7B7', label: '정적에 가까운 조용함', emoji: '🔇' },
+    { color: '#FACC15', label: '부드러운 백색소음', emoji: '🌿' },
+    { color: '#FB923C', label: '편안한 대화가 가능한 공간', emoji: '☕' },
+    { color: '#F43F5E', label: '활발한 소통에 최적', emoji: '😆' },
+  ] : [
+    { color: '#6EE7B7', label: 'Near-silent quietness', emoji: '🔇' },
+    { color: '#FACC15', label: 'Gentle ambient noise', emoji: '🌿' },
+    { color: '#FB923C', label: 'Comfortable conversation space', emoji: '☕' },
+    { color: '#F43F5E', label: 'Perfect for active communication', emoji: '😆' },
   ];
 
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (buttonRef.current && buttonRef.current.contains(e.target as Node)) {
+      setIsDragging(true);
+      setDragOffset({
+        x: e.clientX - position.x,
+        y: e.clientY - position.y,
+      });
+    }
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (isDragging) {
+        setPosition({
+          x: e.clientX - dragOffset.x,
+          y: e.clientY - dragOffset.y,
+        });
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging, dragOffset]);
+
   return (
-    <div className="absolute top-4 right-4 bg-white rounded-lg shadow-lg p-4 z-[1000] max-w-xs">
-      <h3 className="font-bold text-lg mb-3">소리 레벨 가이드</h3>
-      <div className="space-y-2">
-        {legends.map((legend, index) => (
-          <div key={index} className="flex items-center gap-2">
-            <div
-              className="w-4 h-4 rounded-full flex-shrink-0"
-              style={{ backgroundColor: legend.color }}
+    <>
+      {/* 토글 버튼 */}
+      <button
+        ref={buttonRef}
+        onMouseDown={handleMouseDown}
+        onClick={() => {
+          if (!isDragging) {
+            setIsOpen(!isOpen);
+          }
+        }}
+        className="absolute z-[1001] floating-button"
+        style={{
+          left: `${position.x}px`,
+          top: `${position.y}px`,
+          cursor: isDragging ? 'grabbing' : 'grab',
+        }}
+        title={language === 'ko' ? '공간 분위기 범례' : 'Space Atmosphere Legend'}
+      >
+        <div className="relative bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-full p-3 shadow-xl hover:shadow-2xl transition-all hover:scale-110">
+          <svg
+            className="w-6 h-6 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
-            <span className="text-sm text-gray-700">{legend.label}</span>
+          </svg>
+        </div>
+      </button>
+
+      {/* 범례 패널 */}
+      {isOpen && (
+        <div
+          className="absolute z-[1000] bg-white/95 backdrop-blur-sm rounded-xl shadow-xl p-3 animate-fadeIn"
+          style={{
+            left: `${position.x + 60}px`,
+            top: `${position.y}px`,
+          }}
+        >
+          <div className="flex items-center gap-2 mb-2 pb-2 border-b border-gray-200">
+            <svg
+              className="w-4 h-4 text-blue-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span className="text-xs font-bold text-gray-700">
+              {language === 'ko' ? '공간 분위기' : 'Space Atmosphere'}
+            </span>
           </div>
-        ))}
-      </div>
-    </div>
+          <div className="space-y-1.5">
+            {legends.map((legend, index) => (
+              <div key={index} className="flex items-center gap-2">
+                <div
+                  className="w-3 h-3 rounded-full flex-shrink-0 shadow-sm"
+                  style={{ backgroundColor: legend.color }}
+                />
+                <span className="text-xs text-gray-700">
+                  {legend.emoji} {legend.label}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </>
   );
 }

@@ -4,6 +4,11 @@ export interface Review {
   comment: string;
 }
 
+export interface TimeSlot {
+  time: string;
+  level: number;
+}
+
 export interface Place {
   id: number;
   name: string;
@@ -11,6 +16,7 @@ export interface Place {
   lng: number;
   soundLevel: number;
   reviews: Review[];
+  timeBasedLevels: TimeSlot[];
 }
 
 export interface Measurement {

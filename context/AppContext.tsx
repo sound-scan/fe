@@ -1,21 +1,29 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { Place, Review, Measurement } from '@/types';
-import { places as initialPlaces } from '@/data/places';
+import { places as seoulPlaces, placesEN as londonPlaces } from '@/data/places';
 
 interface AppContextType {
   places: Place[];
   latestMeasurement: Measurement | null;
+  language: 'ko' | 'en';
   saveMeasurement: (measurement: Measurement) => void;
   addReview: (placeId: number, review: Review) => void;
+  setLanguage: (lang: 'ko' | 'en') => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [places, setPlaces] = useState<Place[]>(initialPlaces);
+  const [language, setLanguageState] = useState<'ko' | 'en'>('ko');
+  const [places, setPlaces] = useState<Place[]>(seoulPlaces);
   const [latestMeasurement, setLatestMeasurement] = useState<Measurement | null>(null);
+
+  useEffect(() => {
+    // 언어에 따라 장소 데이터 변경
+    setPlaces(language === 'ko' ? seoulPlaces : londonPlaces);
+  }, [language]);
 
   const saveMeasurement = (measurement: Measurement) => {
     setLatestMeasurement(measurement);
@@ -39,8 +47,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     );
   };
 
+  const setLanguage = (lang: 'ko' | 'en') => {
+    setLanguageState(lang);
+  };
+
   return (
-    <AppContext.Provider value={{ places, latestMeasurement, saveMeasurement, addReview }}>
+    <AppContext.Provider value={{ places, latestMeasurement, language, saveMeasurement, addReview, setLanguage }}>
       {children}
     </AppContext.Provider>
   );
