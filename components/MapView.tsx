@@ -75,8 +75,11 @@ export default function MapView({ places, language }: MapViewProps) {
         const center = language === 'ko' ? [37.5172, 127.0473] : [51.5074, -0.1278];
         const map = L.map(mapRef.current).setView(center as [number, number], 12);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '© OpenStreetMap contributors',
+        // CartoDB Positron 타일 레이어 - 더 깔끔한 스타일
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+          subdomains: 'abcd',
+          maxZoom: 20
         }).addTo(map);
 
         mapInstanceRef.current = map;

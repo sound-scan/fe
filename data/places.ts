@@ -583,4 +583,204 @@ export const places: Place[] = [
       },
     ],
   },
+  {
+    id: 21,
+    name: '합정역 일리카페',
+    lat: 37.5493,
+    lng: 126.9144,
+    soundLevel: 48,
+    timeBasedLevels: generateTimeBasedLevels(48, 14),
+    reviews: [
+      {
+        soundLevel: 45,
+        rating: 4,
+        comment: '적당히 조용해서 노트북 작업하기 좋아요.',
+      },
+      {
+        soundLevel: 51,
+        rating: 4,
+        comment: '잔잔한 음악과 대화 소리가 있어 편안합니다.',
+      },
+    ],
+  },
+  {
+    id: 22,
+    name: '연남동 스탠스커피',
+    lat: 37.5662,
+    lng: 126.9220,
+    soundLevel: 62,
+    timeBasedLevels: generateTimeBasedLevels(62, 18),
+    reviews: [
+      {
+        soundLevel: 58,
+        rating: 4,
+        comment: '밝고 활기찬 공간. 친구랑 얘기하기 좋아요.',
+      },
+      {
+        soundLevel: 66,
+        rating: 4,
+        comment: '대화하기 편안한 분위기입니다.',
+      },
+    ],
+  },
+  {
+    id: 23,
+    name: '삼청동 북카페 라운지',
+    lat: 37.5827,
+    lng: 126.9829,
+    soundLevel: 28,
+    timeBasedLevels: generateTimeBasedLevels(28, 10),
+    reviews: [
+      {
+        soundLevel: 25,
+        rating: 5,
+        comment: '조용하고 아늑해서 독서하기 좋아요.',
+      },
+      {
+        soundLevel: 31,
+        rating: 5,
+        comment: '힐링되는 분위기. 혼자 시간 보내기 좋습니다.',
+      },
+    ],
+  },
+  {
+    id: 24,
+    name: '광화문 교보문고 라운지',
+    lat: 37.5713,
+    lng: 126.9768,
+    soundLevel: 22,
+    timeBasedLevels: generateTimeBasedLevels(22, 12),
+    reviews: [
+      {
+        soundLevel: 20,
+        rating: 5,
+        comment: '차분한 분위기. 집중 잘 되는 환경입니다.',
+      },
+      {
+        soundLevel: 24,
+        rating: 5,
+        comment: '조용해서 공부하기 좋아요.',
+      },
+    ],
+  },
+  {
+    id: 25,
+    name: '건대 커먼그라운드 카페존',
+    lat: 37.5400,
+    lng: 127.0664,
+    soundLevel: 72,
+    timeBasedLevels: generateTimeBasedLevels(72, 16),
+    reviews: [
+      {
+        soundLevel: 68,
+        rating: 4,
+        comment: '젊고 활기찬 분위기! 친구랑 놀기 좋아요.',
+      },
+      {
+        soundLevel: 76,
+        rating: 4,
+        comment: '인기 많은 장소라 꽤 활기차요.',
+      },
+    ],
+  },
+  {
+    id: 26,
+    name: '성북구 삼선동 조용한 책방',
+    lat: 37.5864,
+    lng: 127.0166,
+    soundLevel: 18,
+    timeBasedLevels: generateTimeBasedLevels(18, 8),
+    reviews: [
+      {
+        soundLevel: 16,
+        rating: 5,
+        comment: '정말 조용하고 집중 잘 돼요.',
+      },
+      {
+        soundLevel: 20,
+        rating: 5,
+        comment: '혼자 공부하기 딱 좋은 곳입니다.',
+      },
+    ],
+  },
+  {
+    id: 27,
+    name: '사당 이디야 카페',
+    lat: 37.4753,
+    lng: 126.9816,
+    soundLevel: 52,
+    timeBasedLevels: generateTimeBasedLevels(52, 14),
+    reviews: [
+      {
+        soundLevel: 49,
+        rating: 4,
+        comment: '일상적인 카페 소음. 대화·작업 둘 다 가능.',
+      },
+      {
+        soundLevel: 55,
+        rating: 4,
+        comment: '편안한 분위기에서 대화하기 좋습니다.',
+      },
+    ],
+  },
+  {
+    id: 28,
+    name: '왕십리 민트라떼 카페',
+    lat: 37.5617,
+    lng: 127.0382,
+    soundLevel: 38,
+    timeBasedLevels: generateTimeBasedLevels(38, 12),
+    reviews: [
+      {
+        soundLevel: 35,
+        rating: 4,
+        comment: '적당히 조용해서 공부하기 좋았어요.',
+      },
+      {
+        soundLevel: 41,
+        rating: 4,
+        comment: '노트북 작업하기 편안한 분위기.',
+      },
+    ],
+  },
+  {
+    id: 29,
+    name: '신림역 청춘카페',
+    lat: 37.4842,
+    lng: 126.9295,
+    soundLevel: 68,
+    timeBasedLevels: generateTimeBasedLevels(68, 15),
+    reviews: [
+      {
+        soundLevel: 65,
+        rating: 4,
+        comment: '대학가 분위기! 친구들이랑 수다 떨기 좋아요.',
+      },
+      {
+        soundLevel: 71,
+        rating: 4,
+        comment: '밝고 활기차서 모임하기 좋습니다.',
+      },
+    ],
+  },
+  {
+    id: 30,
+    name: '압구정 로스터리랩',
+    lat: 37.5264,
+    lng: 127.0286,
+    soundLevel: 55,
+    timeBasedLevels: generateTimeBasedLevels(55, 13),
+    reviews: [
+      {
+        soundLevel: 52,
+        rating: 4,
+        comment: '조용한 편이라 작업하기 괜찮아요.',
+      },
+      {
+        soundLevel: 58,
+        rating: 4,
+        comment: '적당히 활기차서 대화도 편합니다.',
+      },
+    ],
+  }
 ];
