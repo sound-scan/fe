@@ -1,14 +1,15 @@
 import { Place, TimeSlot } from '@/types';
 
 // 시간대별 소리 레벨 생성 헬퍼 함수
-const generateTimeBasedLevels = (baseLevel: number, variation: number = 15): TimeSlot[] => {
-  const times = ['오전\n6-9시', '낮\n9-12시', '점심\n12-14시', '오후\n14-18시', '저녁\n18-21시', '밤\n21-24시'];
+const generateTimeBasedLevels = (baseLevel: number, variation: number = 15, lang: 'ko' | 'en' = 'ko'): TimeSlot[] => {
+  const times = lang === 'ko'
+    ? ['오전\n6-9시', '낮\n9-12시', '점심\n12-14시', '오후\n14-18시', '저녁\n18-21시', '밤\n21-24시']
+    : ['Morning\n6-9', 'Late AM\n9-12', 'Lunch\n12-14', 'Afternoon\n14-18', 'Evening\n18-21', 'Night\n21-24'];
   return times.map((time, index) => {
-    // 점심시간과 저녁시간에 더 시끄럽게
     let levelModifier = 0;
-    if (index === 2) levelModifier = variation; // 점심
-    else if (index === 4) levelModifier = variation * 0.7; // 저녁
-    else if (index === 0 || index === 5) levelModifier = -variation * 0.5; // 오전, 밤
+    if (index === 2) levelModifier = variation;
+    else if (index === 4) levelModifier = variation * 0.7;
+    else if (index === 0 || index === 5) levelModifier = -variation * 0.5;
 
     return {
       time,
@@ -25,18 +26,10 @@ export const placesEN: Place[] = [
     lat: 51.5299,
     lng: -0.1270,
     soundLevel: 12,
-    timeBasedLevels: generateTimeBasedLevels(12, 7),
+    timeBasedLevels: generateTimeBasedLevels(12, 7, 'en'),
     reviews: [
-      {
-        soundLevel: 10,
-        rating: 5,
-        comment: 'Perfect for focused study. Very quiet and peaceful.',
-      },
-      {
-        soundLevel: 14,
-        rating: 5,
-        comment: 'Excellent environment for research and concentration.',
-      },
+      { soundLevel: 10, rating: 5, comment: 'Perfect for focused study. Very quiet and peaceful.' },
+      { soundLevel: 14, rating: 5, comment: 'Excellent environment for research and concentration.' },
     ],
   },
   {
@@ -45,18 +38,13 @@ export const placesEN: Place[] = [
     lat: 51.5101,
     lng: -0.1340,
     soundLevel: 78,
-    timeBasedLevels: generateTimeBasedLevels(78, 16),
+    timeBasedLevels: generateTimeBasedLevels(78, 16, 'en'),
     reviews: [
-      {
-        soundLevel: 75,
-        rating: 4,
-        comment: 'Lively atmosphere! Great for meeting friends.',
-      },
-      {
-        soundLevel: 81,
-        rating: 4,
-        comment: 'Busy and energetic. Perfect for casual conversations.',
-      },
+      { soundLevel: 75, rating: 4, comment: 'Lively atmosphere! Great for meeting friends.' },
+      { soundLevel: 81, rating: 4, comment: 'Busy and energetic. Perfect for casual conversations.' },
+      { soundLevel: 72, rating: 5, comment: 'Brilliant spot for people watching. Love the buzz!' },
+      { soundLevel: 85, rating: 3, comment: 'Can get quite loud during peak hours, but great coffee.' },
+      { soundLevel: 77, rating: 4, comment: 'Classic West End vibes. Perfect for social catch-ups.' },
     ],
   },
   {
@@ -65,18 +53,13 @@ export const placesEN: Place[] = [
     lat: 51.5074,
     lng: -0.1359,
     soundLevel: 15,
-    timeBasedLevels: generateTimeBasedLevels(15, 8),
+    timeBasedLevels: generateTimeBasedLevels(15, 8, 'en'),
     reviews: [
-      {
-        soundLevel: 12,
-        rating: 5,
-        comment: 'Absolutely silent. Ideal for serious academic work.',
-      },
-      {
-        soundLevel: 18,
-        rating: 5,
-        comment: 'Premium quiet space for focused research.',
-      },
+      { soundLevel: 12, rating: 5, comment: 'Absolutely silent. Ideal for serious academic work.' },
+      { soundLevel: 18, rating: 5, comment: 'Premium quiet space for focused research.' },
+      { soundLevel: 14, rating: 5, comment: 'Historic atmosphere. Perfect for deep concentration.' },
+      { soundLevel: 16, rating: 5, comment: 'One of the best libraries in London. Whisper quiet!' },
+      { soundLevel: 13, rating: 5, comment: 'Stunning collection and blissfully peaceful.' },
     ],
   },
   {
@@ -85,18 +68,10 @@ export const placesEN: Place[] = [
     lat: 51.5118,
     lng: -0.1220,
     soundLevel: 62,
-    timeBasedLevels: generateTimeBasedLevels(62, 17),
+    timeBasedLevels: generateTimeBasedLevels(62, 17, 'en'),
     reviews: [
-      {
-        soundLevel: 58,
-        rating: 4,
-        comment: 'Moderate noise. Good for light work and socializing.',
-      },
-      {
-        soundLevel: 66,
-        rating: 4,
-        comment: 'Busy but comfortable. Nice for meeting colleagues.',
-      },
+      { soundLevel: 58, rating: 4, comment: 'Moderate noise. Good for light work and socializing.' },
+      { soundLevel: 66, rating: 4, comment: 'Busy but comfortable. Nice for meeting colleagues.' },
     ],
   },
   {
@@ -105,18 +80,10 @@ export const placesEN: Place[] = [
     lat: 51.5155,
     lng: -0.1415,
     soundLevel: 70,
-    timeBasedLevels: generateTimeBasedLevels(70, 18),
+    timeBasedLevels: generateTimeBasedLevels(70, 18, 'en'),
     reviews: [
-      {
-        soundLevel: 67,
-        rating: 4,
-        comment: 'Lively shopping district vibe. Great for casual meetings.',
-      },
-      {
-        soundLevel: 73,
-        rating: 4,
-        comment: 'Energetic atmosphere, perfect for social gatherings.',
-      },
+      { soundLevel: 67, rating: 4, comment: 'Lively shopping district vibe. Great for casual meetings.' },
+      { soundLevel: 73, rating: 4, comment: 'Energetic atmosphere, perfect for social gatherings.' },
     ],
   },
   {
@@ -125,18 +92,10 @@ export const placesEN: Place[] = [
     lat: 51.5216,
     lng: -0.1300,
     soundLevel: 18,
-    timeBasedLevels: generateTimeBasedLevels(18, 9),
+    timeBasedLevels: generateTimeBasedLevels(18, 9, 'en'),
     reviews: [
-      {
-        soundLevel: 16,
-        rating: 5,
-        comment: 'Very quiet reading rooms. Excellent for study.',
-      },
-      {
-        soundLevel: 20,
-        rating: 5,
-        comment: 'Perfect silent environment for deep work.',
-      },
+      { soundLevel: 16, rating: 5, comment: 'Very quiet reading rooms. Excellent for study.' },
+      { soundLevel: 20, rating: 5, comment: 'Perfect silent environment for deep work.' },
     ],
   },
   {
@@ -145,18 +104,10 @@ export const placesEN: Place[] = [
     lat: 51.5308,
     lng: -0.1238,
     soundLevel: 55,
-    timeBasedLevels: generateTimeBasedLevels(55, 15),
+    timeBasedLevels: generateTimeBasedLevels(55, 15, 'en'),
     reviews: [
-      {
-        soundLevel: 52,
-        rating: 4,
-        comment: 'Reasonable noise level. Good for quick work sessions.',
-      },
-      {
-        soundLevel: 58,
-        rating: 4,
-        comment: 'Balanced atmosphere for both work and chat.',
-      },
+      { soundLevel: 52, rating: 4, comment: 'Reasonable noise level. Good for quick work sessions.' },
+      { soundLevel: 58, rating: 4, comment: 'Balanced atmosphere for both work and chat.' },
     ],
   },
   {
@@ -165,18 +116,130 @@ export const placesEN: Place[] = [
     lat: 51.5259,
     lng: -0.1337,
     soundLevel: 20,
-    timeBasedLevels: generateTimeBasedLevels(20, 10),
+    timeBasedLevels: generateTimeBasedLevels(20, 10, 'en'),
     reviews: [
-      {
-        soundLevel: 18,
-        rating: 5,
-        comment: 'Peaceful and inspiring space. Great for research.',
-      },
-      {
-        soundLevel: 22,
-        rating: 5,
-        comment: 'Quiet and comfortable reading environment.',
-      },
+      { soundLevel: 18, rating: 5, comment: 'Peaceful and inspiring space. Great for research.' },
+      { soundLevel: 22, rating: 5, comment: 'Quiet and comfortable reading environment.' },
+    ],
+  },
+  {
+    id: 9,
+    name: 'Flat White Soho',
+    lat: 51.5138,
+    lng: -0.1368,
+    soundLevel: 58,
+    timeBasedLevels: generateTimeBasedLevels(58, 14, 'en'),
+    reviews: [
+      { soundLevel: 55, rating: 4, comment: 'Cozy Soho café. Great for catching up with mates.' },
+      { soundLevel: 61, rating: 4, comment: 'Nice background buzz. Lovely flat whites!' },
+    ],
+  },
+  {
+    id: 10,
+    name: 'Barbican Library',
+    lat: 51.5200,
+    lng: -0.0936,
+    soundLevel: 22,
+    timeBasedLevels: generateTimeBasedLevels(22, 10, 'en'),
+    reviews: [
+      { soundLevel: 20, rating: 5, comment: 'Hidden gem! Very quiet and great architecture.' },
+      { soundLevel: 24, rating: 5, comment: 'Perfect for focused reading and study sessions.' },
+    ],
+  },
+  {
+    id: 11,
+    name: 'The Breakfast Club Angel',
+    lat: 51.5345,
+    lng: -0.1049,
+    soundLevel: 75,
+    timeBasedLevels: generateTimeBasedLevels(75, 18, 'en'),
+    reviews: [
+      { soundLevel: 72, rating: 4, comment: 'Fun and buzzy brunch spot. Great for groups!' },
+      { soundLevel: 78, rating: 4, comment: 'Loud but lovely atmosphere. Proper good vibes.' },
+    ],
+  },
+  {
+    id: 12,
+    name: 'Foyles Bookshop Café',
+    lat: 51.5150,
+    lng: -0.1305,
+    soundLevel: 35,
+    timeBasedLevels: generateTimeBasedLevels(35, 12, 'en'),
+    reviews: [
+      { soundLevel: 32, rating: 5, comment: 'Quiet spot surrounded by books. Heaven!' },
+      { soundLevel: 38, rating: 4, comment: 'Calm atmosphere. Perfect for reading and light work.' },
+    ],
+  },
+  {
+    id: 13,
+    name: 'Joe & The Juice Borough',
+    lat: 51.5058,
+    lng: -0.0895,
+    soundLevel: 65,
+    timeBasedLevels: generateTimeBasedLevels(65, 15, 'en'),
+    reviews: [
+      { soundLevel: 62, rating: 4, comment: 'Trendy spot near Borough Market. Lively vibe!' },
+      { soundLevel: 68, rating: 4, comment: 'Good energy, great smoothies. Nice for chats.' },
+    ],
+  },
+  {
+    id: 14,
+    name: 'Imperial College Library',
+    lat: 51.4988,
+    lng: -0.1749,
+    soundLevel: 16,
+    timeBasedLevels: generateTimeBasedLevels(16, 8, 'en'),
+    reviews: [
+      { soundLevel: 14, rating: 5, comment: 'Excellent study environment. Pin-drop silence.' },
+      { soundLevel: 18, rating: 5, comment: 'Top-notch facilities. Perfect for revision.' },
+    ],
+  },
+  {
+    id: 15,
+    name: 'Notes Coffee Trafalgar Square',
+    lat: 51.5078,
+    lng: -0.1280,
+    soundLevel: 52,
+    timeBasedLevels: generateTimeBasedLevels(52, 14, 'en'),
+    reviews: [
+      { soundLevel: 49, rating: 4, comment: 'Lovely independent café. Moderate buzz.' },
+      { soundLevel: 55, rating: 4, comment: 'Great spot for laptop work between meetings.' },
+    ],
+  },
+  {
+    id: 16,
+    name: 'The Ned - Members Club',
+    lat: 51.5137,
+    lng: -0.0878,
+    soundLevel: 68,
+    timeBasedLevels: generateTimeBasedLevels(68, 16, 'en'),
+    reviews: [
+      { soundLevel: 65, rating: 5, comment: 'Stunning interiors. Classy social atmosphere.' },
+      { soundLevel: 71, rating: 4, comment: 'Buzzy but sophisticated. Great for networking.' },
+    ],
+  },
+  {
+    id: 17,
+    name: 'LSE Library',
+    lat: 51.5144,
+    lng: -0.1165,
+    soundLevel: 14,
+    timeBasedLevels: generateTimeBasedLevels(14, 7, 'en'),
+    reviews: [
+      { soundLevel: 12, rating: 5, comment: 'Extremely quiet. Brilliant study environment.' },
+      { soundLevel: 16, rating: 5, comment: 'One of the best academic libraries in London.' },
+    ],
+  },
+  {
+    id: 18,
+    name: 'Grind Coffee Greenwich',
+    lat: 51.4813,
+    lng: -0.0077,
+    soundLevel: 48,
+    timeBasedLevels: generateTimeBasedLevels(48, 13, 'en'),
+    reviews: [
+      { soundLevel: 45, rating: 4, comment: 'Relaxed Greenwich vibe. Good for remote work.' },
+      { soundLevel: 51, rating: 4, comment: 'Nice balance of quiet and atmosphere.' },
     ],
   },
 ];
