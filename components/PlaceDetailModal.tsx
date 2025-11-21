@@ -146,7 +146,7 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
               onClick={startMeasuring}
               className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-4 rounded-xl font-medium hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl mb-4"
             >
-              🎤 소리 측정하고 리뷰 작성하기
+              🎤 소리 측정하기
             </button>
           )}
 
@@ -156,7 +156,10 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
               <div className="flex items-center justify-between mb-3">
                 <h3 className="font-bold text-lg text-gray-800">🎤 소리 측정 중</h3>
                 <button
-                  onClick={stopMeasuring}
+                  onClick={() => {
+                    stopMeasuring();
+                    setShowReviewForm(true);
+                  }}
                   className="bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-red-600 hover:to-red-700 transition-all shadow-md"
                 >
                   ⏹ 측정 중지
@@ -182,7 +185,7 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
           )}
 
           {/* 리뷰 폼 */}
-          {(isMeasuring || showReviewForm) && (
+          {showReviewForm && !isMeasuring && (
             <form onSubmit={handleSubmitReview} className="mb-6 p-5 bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl border border-gray-200 animate-fadeIn">
               <h3 className="font-bold text-lg mb-4 text-gray-800">✨ 리뷰 작성</h3>
               <div className="space-y-4">
