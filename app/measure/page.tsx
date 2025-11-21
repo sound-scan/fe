@@ -8,7 +8,7 @@ import { Place } from '@/types';
 
 export default function MeasurePage() {
   const router = useRouter();
-  const { saveMeasurement, places, addReview } = useApp();
+  const { places, addReview } = useApp();
   const [isRecording, setIsRecording] = useState(false);
   const [soundLevel, setSoundLevel] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -94,16 +94,6 @@ export default function MeasurePage() {
     setSoundLevel(normalizedLevel);
 
     animationFrameRef.current = requestAnimationFrame(updateSoundLevel);
-  };
-
-  const handleSave = () => {
-    saveMeasurement({
-      soundLevel,
-      timestamp: Date.now(),
-    });
-
-    alert(`소리 레벨 ${soundLevel}이(가) 저장되었습니다!`);
-    router.push('/map');
   };
 
   const handleWriteReview = () => {
@@ -219,20 +209,12 @@ export default function MeasurePage() {
               >
                 측정 중지
               </button>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  onClick={handleWriteReview}
-                  className="bg-gradient-to-r from-purple-500 to-purple-600 text-white py-3 rounded-lg font-medium hover:from-purple-600 hover:to-purple-700 transition-all shadow-lg"
-                >
-                  리뷰 작성
-                </button>
-                <button
-                  onClick={handleSave}
-                  className="bg-gradient-to-r from-green-500 to-green-600 text-white py-3 rounded-lg font-medium hover:from-green-600 hover:to-green-700 transition-all shadow-lg"
-                >
-                  저장하기
-                </button>
-              </div>
+              <button
+                onClick={handleWriteReview}
+                className="w-full bg-gradient-to-r from-purple-500 via-purple-600 to-pink-600 text-white py-4 rounded-lg font-medium text-lg hover:from-purple-600 hover:via-purple-700 hover:to-pink-700 transition-all shadow-lg"
+              >
+                리뷰 작성하기
+              </button>
             </>
           )}
         </div>

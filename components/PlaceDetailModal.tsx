@@ -12,7 +12,7 @@ interface PlaceDetailModalProps {
 }
 
 export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalProps) {
-  const { addReview } = useApp();
+  const { addReview, language } = useApp();
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [activeTab, setActiveTab] = useState<'chart' | 'reviews'>('chart');
   const [reviewForm, setReviewForm] = useState({
@@ -60,7 +60,7 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
       updateSoundLevel();
     } catch (err) {
       console.error('Error accessing microphone:', err);
-      setMeasureError('마이크 접근 권한이 필요합니다.');
+      setMeasureError(language === 'ko' ? '마이크 접근 권한이 필요합니다.' : 'Microphone permission required.');
     }
   };
 
@@ -105,7 +105,7 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
     addReview(place.id, reviewForm);
     setShowReviewForm(false);
     setReviewForm({ soundLevel: 50, rating: 5, comment: '' });
-    alert('리뷰가 등록되었습니다!');
+    alert(language === 'ko' ? '리뷰가 등록되었습니다!' : 'Review submitted!');
   };
 
   return (
@@ -146,7 +146,7 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
               onClick={startMeasuring}
               className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-4 rounded-xl font-medium hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl mb-4"
             >
-              🎤 소리 측정하고 리뷰 작성하기
+              🎤 {language === 'ko' ? '소리 측정하기' : 'Measure Sound'}
             </button>
           )}
 
@@ -154,23 +154,26 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
           {isMeasuring && (
             <div className="mb-4 p-5 bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl border-2 border-blue-200 animate-fadeIn">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="font-bold text-lg text-gray-800">🎤 소리 측정 중</h3>
+                <h3 className="font-bold text-lg text-gray-800">🎤 {language === 'ko' ? '소리 측정 중' : 'Measuring...'}</h3>
                 <button
-                  onClick={stopMeasuring}
+                  onClick={() => {
+                    stopMeasuring();
+                    setShowReviewForm(true);
+                  }}
                   className="bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-red-600 hover:to-red-700 transition-all shadow-md"
                 >
-                  ⏹ 측정 중지
+                  ⏹ {language === 'ko' ? '측정 중지' : 'Stop'}
                 </button>
               </div>
               <div className="mb-3 flex items-center gap-2 bg-blue-100 px-4 py-3 rounded-lg">
                 <div className="w-3 h-3 bg-blue-600 rounded-full animate-pulse"></div>
-                <span className="text-sm font-medium text-blue-700">실시간으로 소리를 측정하고 있습니다...</span>
+                <span className="text-sm font-medium text-blue-700">{language === 'ko' ? '실시간으로 소리를 측정하고 있습니다...' : 'Measuring sound in real-time...'}</span>
               </div>
               <div className="bg-white rounded-xl p-4 text-center">
                 <div className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
                   {reviewForm.soundLevel}
                 </div>
-                <p className="text-sm text-gray-600">현재 소리 레벨</p>
+                <p className="text-sm text-gray-600">{language === 'ko' ? '현재 소리 레벨' : 'Current Level'}</p>
               </div>
             </div>
           )}
@@ -182,13 +185,13 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
           )}
 
           {/* 리뷰 폼 */}
-          {(isMeasuring || showReviewForm) && (
+          {showReviewForm && !isMeasuring && (
             <form onSubmit={handleSubmitReview} className="mb-6 p-5 bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl border border-gray-200 animate-fadeIn">
-              <h3 className="font-bold text-lg mb-4 text-gray-800">✨ 리뷰 작성</h3>
+              <h3 className="font-bold text-lg mb-4 text-gray-800">✨ {language === 'ko' ? '리뷰 작성' : 'Write Review'}</h3>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    측정된 소리 레벨
+                    {language === 'ko' ? '측정된 소리 레벨' : 'Measured Sound Level'}
                   </label>
                   <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 text-center border-2 border-gray-200">
                     <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -201,7 +204,7 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    별점
+                    {language === 'ko' ? '별점' : 'Rating'}
                   </label>
                   <div className="flex gap-2">
                     {[5, 4, 3, 2, 1].map((rating) => (
@@ -222,14 +225,14 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    코멘트
+                    {language === 'ko' ? '코멘트' : 'Comment'}
                   </label>
                   <textarea
                     value={reviewForm.comment}
                     onChange={(e) => setReviewForm({ ...reviewForm, comment: e.target.value })}
                     className="w-full border-2 border-gray-300 focus:border-blue-500 rounded-xl px-4 py-3 transition-colors outline-none"
                     rows={3}
-                    placeholder="이 장소는 어떤 활동에 좋았나요?"
+                    placeholder={language === 'ko' ? '이 장소는 어떤 활동에 좋았나요?' : 'What activities is this place good for?'}
                     required
                   />
                 </div>
@@ -237,7 +240,7 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
                   type="submit"
                   className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-xl font-medium hover:from-green-600 hover:to-emerald-700 transition-all shadow-lg"
                 >
-                  리뷰 등록
+                  {language === 'ko' ? '리뷰 등록' : 'Submit Review'}
                 </button>
               </div>
             </form>
@@ -253,7 +256,7 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
                   : 'text-gray-600 hover:text-gray-800'
               }`}
             >
-              시간대별 분위기
+              {language === 'ko' ? '시간대별 분위기' : 'By Time'}
             </button>
             <button
               onClick={() => setActiveTab('reviews')}
@@ -263,18 +266,18 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
                   : 'text-gray-600 hover:text-gray-800'
               }`}
             >
-              리뷰 ({place.reviews.length})
+              {language === 'ko' ? '리뷰' : 'Reviews'} ({place.reviews.length})
             </button>
           </div>
 
           {/* 탭 컨텐츠 */}
           {activeTab === 'chart' ? (
             <div className="bg-gradient-to-br from-white to-blue-50 rounded-xl p-3 border border-gray-200">
-              <h3 className="font-bold text-base mb-1 text-gray-800">시간대별 소리 레벨</h3>
+              <h3 className="font-bold text-base mb-1 text-gray-800">{language === 'ko' ? '시간대별 소리 레벨' : 'Sound Level by Time'}</h3>
               <p className="text-xs text-gray-600 mb-3">
-                하루 동안의 평균 소리 레벨 변화를 확인하세요
+                {language === 'ko' ? '하루 동안의 평균 소리 레벨 변화를 확인하세요' : 'Check the average sound level throughout the day'}
               </p>
-              <TimeBasedChart data={place.timeBasedLevels} />
+              <TimeBasedChart data={place.timeBasedLevels} language={language} />
             </div>
           ) : (
             <div className="space-y-2.5">
@@ -288,7 +291,7 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
                       <span className="text-base">{'⭐'.repeat(review.rating)}</span>
                     </div>
                     <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs font-bold px-2.5 py-0.5 rounded-full">
-                      소리 {review.soundLevel}
+                      {language === 'ko' ? '소리' : 'Level'} {review.soundLevel}
                     </div>
                   </div>
                   <p className="text-sm text-gray-700 leading-relaxed">{review.comment}</p>
