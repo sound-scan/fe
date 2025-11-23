@@ -1,4 +1,5 @@
 import { Place, TimeSlot } from '@/types';
+import { mockSoundAnalysis } from '@/utils/soundLevel';
 
 // 시간대별 소리 레벨 생성 헬퍼 함수
 const generateTimeBasedLevels = (baseLevel: number, variation: number = 15, lang: 'ko' | 'en' = 'ko'): TimeSlot[] => {
@@ -11,11 +12,25 @@ const generateTimeBasedLevels = (baseLevel: number, variation: number = 15, lang
     else if (index === 4) levelModifier = variation * 0.7;
     else if (index === 0 || index === 5) levelModifier = -variation * 0.5;
 
+    const level = Math.min(100, Math.max(0, Math.round(baseLevel + levelModifier)));
+    const analysis = mockSoundAnalysis(level);
+
     return {
       time,
-      level: Math.min(100, Math.max(0, Math.round(baseLevel + levelModifier)))
+      level,
+      nsi: analysis.nsi,
     };
   });
+};
+
+// Place에 AI 분석 정보 추가하는 헬퍼 함수
+const enrichPlaceWithAnalysis = (place: Place): Place => {
+  const analysis = mockSoundAnalysis(place.soundLevel);
+  return {
+    ...place,
+    nsi: analysis.nsi,
+    analysis,
+  };
 };
 
 // 런던 장소 데이터
@@ -242,10 +257,10 @@ export const placesEN: Place[] = [
       { soundLevel: 51, rating: 4, comment: 'Nice balance of quiet and atmosphere.' },
     ],
   },
-];
+].map(enrichPlaceWithAnalysis);
 
 // 서울 장소 데이터
-export const places: Place[] = [
+const seoulPlacesRaw: Place[] = [
   {
     id: 1,
     name: '스타벅스 강남역점',
@@ -847,3 +862,5 @@ export const places: Place[] = [
     ],
   }
 ];
+
+export const places: Place[] = seoulPlacesRaw.map(enrichPlaceWithAnalysis);

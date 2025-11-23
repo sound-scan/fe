@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Place } from '@/types';
 import { useApp } from '@/context/AppContext';
-import { getSoundLevelDescription } from '@/utils/soundLevel';
+import { getSoundLevelDescription, getNSIDescription, getSoundTypeName, getSoundTypeIcon } from '@/utils/soundLevel';
 import TimeBasedChart from './TimeBasedChart';
 
 interface PlaceDetailModalProps {
@@ -14,7 +14,7 @@ interface PlaceDetailModalProps {
 export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalProps) {
   const { addReview, language } = useApp();
   const [showReviewForm, setShowReviewForm] = useState(false);
-  const [activeTab, setActiveTab] = useState<'chart' | 'reviews'>('chart');
+  const [activeTab, setActiveTab] = useState<'chart' | 'analysis' | 'reviews'>('analysis');
   const [reviewForm, setReviewForm] = useState({
     soundLevel: 50,
     rating: 5,
@@ -247,20 +247,30 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
           )}
 
           {/* 탭 */}
-          <div className="flex gap-2 mb-4 bg-gray-100 p-1 rounded-xl">
+          <div className="flex gap-1 mb-4 bg-gray-100 p-1 rounded-xl">
+            <button
+              onClick={() => setActiveTab('analysis')}
+              className={`flex-1 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
+                activeTab === 'analysis'
+                  ? 'bg-white text-green-600 shadow-md'
+                  : 'text-gray-600 hover:text-gray-800'
+              }`}
+            >
+              {language === 'ko' ? 'NSI 분석' : 'NSI Analysis'}
+            </button>
             <button
               onClick={() => setActiveTab('chart')}
-              className={`flex-1 py-2.5 px-4 rounded-lg font-medium transition-all ${
+              className={`flex-1 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
                 activeTab === 'chart'
                   ? 'bg-white text-blue-600 shadow-md'
                   : 'text-gray-600 hover:text-gray-800'
               }`}
             >
-              {language === 'ko' ? '시간대별 분위기' : 'By Time'}
+              {language === 'ko' ? '시간대별' : 'By Time'}
             </button>
             <button
               onClick={() => setActiveTab('reviews')}
-              className={`flex-1 py-2.5 px-4 rounded-lg font-medium transition-all ${
+              className={`flex-1 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
                 activeTab === 'reviews'
                   ? 'bg-white text-purple-600 shadow-md'
                   : 'text-gray-600 hover:text-gray-800'
@@ -271,7 +281,122 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
           </div>
 
           {/* 탭 컨텐츠 */}
-          {activeTab === 'chart' ? (
+          {activeTab === 'analysis' && place.analysis && place.nsi !== undefined ? (
+            <div className="space-y-3">
+              {/* NSI 카드 */}
+              <div
+                className="rounded-xl p-5 border-2 text-center"
+                style={{
+                  backgroundColor: getNSIDescription(place.nsi, language).color + '15',
+                  borderColor: getNSIDescription(place.nsi, language).color,
+                }}
+              >
+                <div className="flex items-center justify-center gap-3 mb-3">
+                  <span className="text-4xl">{getNSIDescription(place.nsi, language).emoji}</span>
+                  <div className="text-center">
+                    <div
+                      className="text-5xl font-bold"
+                      style={{ color: getNSIDescription(place.nsi, language).color }}
+                    >
+                      {place.nsi}
+                    </div>
+                    <div className="text-xs text-gray-600 mt-1">NSI</div>
+                  </div>
+                </div>
+                <div
+                  className="text-lg font-bold mb-1"
+                  style={{ color: getNSIDescription(place.nsi, language).color }}
+                >
+                  {getNSIDescription(place.nsi, language).level}
+                </div>
+                <p className="text-sm text-gray-700">{getNSIDescription(place.nsi, language).description}</p>
+              </div>
+
+              {/* 소리 분류 원 그래프 */}
+              <div className="bg-white rounded-xl p-4 border border-gray-200">
+                <h3 className="font-bold text-base mb-3 text-gray-800 flex items-center gap-2">
+                  <span>🎯</span>
+                  {language === 'ko' ? '주요 소음 원인' : 'Sound Sources'}
+                </h3>
+
+                {/* 원 그래프 */}
+                <div className="flex items-center justify-center mb-4">
+                  <div className="relative w-48 h-48">
+                    <svg className="w-full h-full transform -rotate-90">
+                      {place.analysis.classifications
+                        .sort((a, b) => b.percentage - a.percentage)
+                        .reduce((acc, classification, index, arr) => {
+                          const total = arr.reduce((sum, c) => sum + c.percentage, 0);
+                          const startAngle = acc.angle;
+                          const sweepAngle = (classification.percentage / total) * 360;
+                          const endAngle = startAngle + sweepAngle;
+
+                          const radius = 70;
+                          const centerX = 96;
+                          const centerY = 96;
+
+                          const startRad = (startAngle * Math.PI) / 180;
+                          const endRad = (endAngle * Math.PI) / 180;
+
+                          const x1 = centerX + radius * Math.cos(startRad);
+                          const y1 = centerY + radius * Math.sin(startRad);
+                          const x2 = centerX + radius * Math.cos(endRad);
+                          const y2 = centerY + radius * Math.sin(endRad);
+
+                          const largeArcFlag = sweepAngle > 180 ? 1 : 0;
+
+                          const colors = ['#8B5CF6', '#EC4899', '#F59E0B', '#10B981', '#3B82F6', '#6366F1'];
+                          const color = colors[index % colors.length];
+
+                          acc.elements.push(
+                            <path
+                              key={index}
+                              d={`M ${centerX} ${centerY} L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2} Z`}
+                              fill={color}
+                              opacity="0.8"
+                            />
+                          );
+
+                          acc.angle = endAngle;
+                          return acc;
+                        }, { angle: 0, elements: [] as JSX.Element[] }).elements}
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="text-3xl font-bold text-gray-800">{place.soundLevel}</div>
+                        <div className="text-xs text-gray-600">{language === 'ko' ? '소리 레벨' : 'Level'}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 범례 */}
+                <div className="space-y-2">
+                  {place.analysis.classifications
+                    .sort((a, b) => b.percentage - a.percentage)
+                    .map((classification, index) => {
+                      const colors = ['#8B5CF6', '#EC4899', '#F59E0B', '#10B981', '#3B82F6', '#6366F1'];
+                      const color = colors[index % colors.length];
+                      return (
+                        <div key={index} className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div
+                              className="w-3 h-3 rounded-full"
+                              style={{ backgroundColor: color }}
+                            />
+                            <span className="text-xs">{getSoundTypeIcon(classification.type)}</span>
+                            <span className="text-sm font-medium text-gray-700">
+                              {getSoundTypeName(classification.type, language)}
+                            </span>
+                          </div>
+                          <span className="text-sm font-bold text-gray-800">{classification.percentage}%</span>
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+            </div>
+          ) : activeTab === 'chart' ? (
             <div className="bg-gradient-to-br from-white to-blue-50 rounded-xl p-3 border border-gray-200">
               <h3 className="font-bold text-base mb-1 text-gray-800">{language === 'ko' ? '시간대별 소리 레벨' : 'Sound Level by Time'}</h3>
               <p className="text-xs text-gray-600 mb-3">
@@ -279,7 +404,7 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
               </p>
               <TimeBasedChart data={place.timeBasedLevels} language={language} />
             </div>
-          ) : (
+          ) : activeTab === 'reviews' ? (
             <div className="space-y-2.5">
               {place.reviews.map((review, index) => (
                 <div
@@ -298,7 +423,7 @@ export default function PlaceDetailModal({ place, onClose }: PlaceDetailModalPro
                 </div>
               ))}
             </div>
-          )}
+          ) : null}
         </div>
       </div>
     </div>

@@ -3,14 +3,15 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/context/AppContext';
-import { getSoundLevelDescription } from '@/utils/soundLevel';
-import { Place } from '@/types';
+import { getSoundLevelDescription, mockSoundAnalysis, getNSIDescription, getSoundTypeName, getSoundTypeIcon } from '@/utils/soundLevel';
+import { Place, SoundAnalysis } from '@/types';
 
 export default function MeasurePage() {
   const router = useRouter();
   const { places, addReview } = useApp();
   const [isRecording, setIsRecording] = useState(false);
   const [soundLevel, setSoundLevel] = useState(0);
+  const [soundAnalysis, setSoundAnalysis] = useState<SoundAnalysis | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showPlaceSelection, setShowPlaceSelection] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
@@ -92,6 +93,12 @@ export default function MeasurePage() {
     const normalizedLevel = Math.min(100, Math.round((average / 128) * 100));
 
     setSoundLevel(normalizedLevel);
+
+    // AI 분석 실행 (1초마다 한 번씩만)
+    if (!soundAnalysis || Math.random() < 0.1) {
+      const analysis = mockSoundAnalysis(normalizedLevel, dataArray);
+      setSoundAnalysis(analysis);
+    }
 
     animationFrameRef.current = requestAnimationFrame(updateSoundLevel);
   };
@@ -187,10 +194,75 @@ export default function MeasurePage() {
             </div>
           )}
 
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 text-center">
+          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 text-center mb-4">
             <div className="text-lg font-bold text-gray-800 mb-1">{level}</div>
             <div className="text-sm text-gray-600">{activity}</div>
           </div>
+
+          {/* AI 분석 결과 */}
+          {isRecording && soundAnalysis && (
+            <div className="space-y-3 animate-fadeIn">
+              {/* NSI 표시 */}
+              <div
+                className="rounded-lg p-4 border-2"
+                style={{
+                  backgroundColor: getNSIDescription(soundAnalysis.nsi).color + '10',
+                  borderColor: getNSIDescription(soundAnalysis.nsi).color,
+                }}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl">{getNSIDescription(soundAnalysis.nsi).emoji}</span>
+                    <h3 className="font-bold text-gray-800">NSI (소음 스트레스 지수)</h3>
+                  </div>
+                  <div
+                    className="text-2xl font-bold"
+                    style={{ color: getNSIDescription(soundAnalysis.nsi).color }}
+                  >
+                    {soundAnalysis.nsi}
+                  </div>
+                </div>
+                <div className="text-sm text-gray-700">
+                  <div className="font-medium">{getNSIDescription(soundAnalysis.nsi).level}</div>
+                  <div className="text-xs mt-1">{getNSIDescription(soundAnalysis.nsi).description}</div>
+                </div>
+              </div>
+
+              {/* 소리 종류 분류 */}
+              <div className="bg-white rounded-lg p-4 border border-gray-200">
+                <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                  <span>🎯</span>
+                  주요 소음 원인
+                </h3>
+                <div className="space-y-2">
+                  {soundAnalysis.classifications
+                    .sort((a, b) => b.percentage - a.percentage)
+                    .slice(0, 3)
+                    .map((classification, index) => (
+                      <div key={index}>
+                        <div className="flex items-center justify-between mb-1">
+                          <div className="flex items-center gap-2 text-sm">
+                            <span>{getSoundTypeIcon(classification.type)}</span>
+                            <span className="font-medium text-gray-700">
+                              {getSoundTypeName(classification.type)}
+                            </span>
+                          </div>
+                          <span className="text-sm font-bold text-purple-600">
+                            {classification.percentage}%
+                          </span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div
+                            className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all"
+                            style={{ width: `${classification.percentage}%` }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="space-y-3">
